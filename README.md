@@ -4,8 +4,30 @@ Live: **https://encore.tlz.us**
 
 Encore is a Backblaze Generative Media Hackathon entry: a local-first AI studio
 that produces **episodic** content — the same cast returning episode after
-episode — on a single home GPU, with **Backblaze B2** as the studio's library
+episode — on a single local GPU, with **Backblaze B2** as the studio's library
 and its memory. See `DEVPOST_SUBMISSION.md` for the full story.
+
+## The problem we solve
+
+Most generative video starts from zero on every prompt: regenerate a character
+and you get a stranger; generate scene 2 and it has forgotten scene 1. That's
+fine for clips — it's fatal for *shows*, which live or die on continuity.
+
+Encore builds a **persistent canon** instead. Characters are banked once as
+identity anchors in a B2 vault and pulled into every subsequent generation.
+A local vision judge scores every take against the anchor (pass ≥ 0.9, retake
+with feedback otherwise), so drift is caught before it airs. Season memory on
+B2 lets the planner write episode N as a continuation of episodes 1..N-1, and
+every generation step is sealed as a Genblaze manifest — so the whole creative
+process is auditable after the fact.
+
+| | Typical clip generator | Encore |
+|---|---|---|
+| Character identity | new face per prompt | anchored to a versioned B2 vault |
+| Between episodes | no memory | season memory + "Previously on…" recaps |
+| Quality control | human eyeballs | judge scores every take, auto-retakes |
+| Audit trail | none | sealed manifests w/ retake lineage (The Ledger) |
+| Output | a clip | a composed episode: VO, score, cards, poster |
 
 ## What's in here
 

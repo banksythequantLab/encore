@@ -1,10 +1,12 @@
 # Encore — the first AI network with a persistent cast and a living canon
 
+**Encore is the AI studio that remembers.** Its characters don't reset between episodes — their
+identity anchors and the season's memory live on **Backblaze B2**, and every frame is **judged
+against canon** before it airs. Three serialized episodes in, the same cast is still telling one
+continuous story, produced end-to-end on a single local GPU.
+
 **Tagline:** Everyone else's AI video demo makes a disposable clip. Encore is a **network whose
-cast comes back**: identity anchors and the season's memory live on **Backblaze B2**, every take
-is judged against canon, and full episodes are produced **end-to-end** — each one continuing the
-story the network remembers from B2. Continuity as infrastructure, not a prompt trick. And the
-whole studio runs on **one home GPU**.
+cast comes back** — continuity as infrastructure, not a prompt trick.
 
 **Live:** https://encore.tlz.us — the library, the cast, and the studio floor are real and public.
 
@@ -60,6 +62,12 @@ let a local vision judge **grade every take against the anchor** until the right
 
 ## How it uses Backblaze B2 (the hero — data orchestration, not "store a file")
 
+**Why B2, specifically:** the studio's memory can't live in the model (models forget) or on the
+box (a single-GPU rig has no durability story). It needs storage that is durable, versioned,
+cheap enough to write on every single generation, and fast enough to stream a public site from.
+B2 is all four — so the vault, the season bible, the manifest chain, and the entire media library
+live there. Delete the box, and the show survives.
+
 - **Series Vault:** cast identity anchors, content-addressable by SHA-256, versioned by a
   `season.json` bible. B2 is the studio's long-term memory — it's *why* the cast can return.
 - **The library IS B2:** episodes, posters, visitor shots, music and manifests all live on B2 and
@@ -90,6 +98,14 @@ Everything except B2 runs on-box, for free.
 ## What's real today (no fake results)
 
 Everything above is live and was verified on real public runs — nothing is mocked:
+- **A three-episode serialized arc** (*Submersion* → *Signal In The Shadows* → *Data in the
+  Deep*): each premise was written by the planner from the season memory on B2, each episode
+  opens on a "Previously on…" card recalled from B2, and each recorded itself back into the
+  canon when it finished.
+- **Self-correction is visible in the data:** the judge pass threshold is 0.9, the character's
+  vault appearance is pinned into every keyframe prompt, and The Ledger on the live site shows a
+  real rejected take with its score and the retake lineage that replaced it — deep-linked to the
+  raw Genblaze manifest on B2.
 - Public visitors have produced **complete episodes** through encore.tlz.us (e.g. *Flooded
   Pursuit*: 2 scenes, 24s, chained i2v, identity 0.95, built in ~12 min on the queue).
 - The vault round-trips a real banked cast (two shows, five characters); the judge scores

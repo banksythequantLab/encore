@@ -20,3 +20,5 @@ demo/*.flac
 demo/*.m4a
 demo/concat.txt
 demo/_*
+demo/*.ttf
+demo/capt*.txt

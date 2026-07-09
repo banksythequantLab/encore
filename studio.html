@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Encore — a streaming network run by one GPU</title>
+<title>Encore — the AI network whose cast comes back · built on Backblaze B2</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap');
   :root{
@@ -174,11 +174,11 @@
     <h1 class="title" id="heroTitle">Seasons,<br><span class="g">not clips.</span></h1>
     <p class="lead">The first AI network where the cast <i>comes back</i>. Identity anchors and the season's
       memory live on <b style="color:#fff">Backblaze&nbsp;B2</b>; every take is judged against canon —
-      continuity as infrastructure, not a prompt trick. And the whole studio runs on one home GPU.</p>
+      continuity as infrastructure, not a prompt trick.</p>
     <div class="heroBadges">
       <button class="playbtn" id="heroPlay" style="display:none"><span class="tri">&#9654;</span><span id="heroPlayLabel">Play</span></button>
       <span class="b2pill"><span class="b2" id="herob2"></span><span class="l">the network's memory</span></span>
-      <span class="tag ok">100% local &middot; $0 cloud credits</span>
+      <span class="tag ok">local-first generation &middot; provenance-sealed on B2</span>
     </div>
     <div class="heroMeta" id="heroMeta"></div>
   </div></div>
@@ -199,7 +199,7 @@
 </div></section>
 
 <section id="create"><div class="wrap">
-  <div class="head"><h2>Make Your Own</h2><span class="sub">the maker is open &mdash; your shot renders on the network's one GPU</span></div>
+  <div class="head"><h2>Make Your Own</h2><span class="sub">the studio maker &mdash; shots and episodes run through the Genblaze pipeline</span></div>
   <p class="note">Pick a cast member, describe a scene or pitch an episode. Jobs queue one at a time —
     watch yours on the <a href="#floor" style="color:var(--cyan)">Studio Floor</a>.</p>
   <div class="maker">
@@ -229,7 +229,7 @@
 </div></section>
 
 <section id="community"><div class="wrap">
-  <div class="head"><h2>Made On This Network</h2><span class="sub">shots visitors created through the public maker &mdash; rendered on the one GPU, kept on B2</span></div>
+  <div class="head"><h2>Made On This Network</h2><span class="sub">shots created through the studio maker &mdash; every take kept on Backblaze B2</span></div>
   <div id="commRoot"><div class="empty">No visitor shots yet — be the first, above.</div></div>
 </div></section>
 
@@ -253,7 +253,7 @@
 </div></section>
 
 <footer><div class="wrap"><div class="foot">
-  <span>Encore — a streaming network run by one GPU.</span><span>&middot;</span>
+  <span>Encore — the AI network whose cast comes back.</span><span>&middot;</span>
   <span class="b2" id="footb2"></span><span>&middot;</span>
   <span>Genblaze &middot; ComfyUI &middot; Ollama Qwen3-VL</span>
 </div></div></footer>
@@ -425,7 +425,7 @@ async function generate(){
       mkHint.innerHTML='⚡ Generation runs on the studio\'s local GPUs. This is the public demo — clone the repo and run Encore locally. (The Library and Cast are live.)';
       mkGo.disabled=false; return; }
     if(r.status===429){ const d=await r.json().catch(()=>({})); mkProg.style.display='none';
-      mkHint.style.display='block'; mkHint.innerHTML='⏳ '+((d.detail)||'Rate limit reached — the one GPU is busy. Try again later.');
+      mkHint.style.display='block'; mkHint.innerHTML='⏳ '+((d.detail)||'Rate limit reached — the studio queue is busy. Try again later.');
       mkGo.disabled=false; return; }
     if(!r.ok) throw new Error('http '+r.status);
     jid=(await r.json()).job_id;
@@ -536,8 +536,9 @@ async function loadLedger(){
       const link=a.b2_key?`<a href="/media/${esc(a.b2_key)}" target="_blank" style="color:var(--cyan)">${esc((a.sha256||'').slice(0,12))}…</a>`:'—';
       const retake=r.parent_run_id?`<span style="color:var(--warn)">↺ retake of ${esc(String(r.parent_run_id).slice(0,8))}</span>`:'<span style="color:#5f6f8f">original take</span>';
       const t=(r.completed_at||'').replace('T',' ').slice(5,16);
+      const mlink=r.manifest_key?`<a href="/media/${esc(r.manifest_key)}" target="_blank" style="color:var(--cyan);flex:none">manifest ↗</a>`:'';
       return `<div style="display:flex;gap:14px;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);flex-wrap:wrap">
-        <span style="color:#5f6f8f;flex:none">${esc(t)}</span>
+        <span style="color:#5f6f8f;flex:none">${esc(t)}</span>${mlink}
         <span style="color:var(--cyan2);flex:none">${esc(r.model||'?')}</span>
         <span style="flex:1;min-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dim)">${esc(r.name||'')} · ${esc(r.prompt||'')}</span>
         <span style="flex:none">${retake}</span>

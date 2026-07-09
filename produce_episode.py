@@ -205,11 +205,19 @@ def produce_episode(show: str, character: str, premise: str, n_scenes: int = 2,
         _log(f"  scene {s.scene_id}: {s.location} | {s.caption}")
 
     anchor_uri = None
+    appearance = ""
     try:
         cast = {c["name"].lower(): c for c in vault.load_cast_from_b2(show)["cast"]}
         anchor_uri = cast[character.lower()].get("dataUri")
+        appearance = cast[character.lower()].get("appearance", "")
     except Exception as e:  # noqa: BLE001
         _log("  anchor load warn:", e)
+    # Identity hardening: pin appearance into EVERY keyframe prompt so scenes can't
+    # reinterpret wardrobe/hair (main cross-episode drift source).
+    if appearance:
+        for s in spec.scenes:
+            s.keyframe_prompt += (f" {character}'s exact appearance, unchanged: {appearance}."
+                                  f" Identical face, identical hairstyle, identical outfit.")
     judge = make_identity_judge(anchor_uri, character) if anchor_uri else (lambda ref: _passthru())
 
     scenes_out = []

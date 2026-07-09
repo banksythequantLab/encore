@@ -198,7 +198,7 @@ from fastapi.responses import Response  # noqa: E402
 _MEDIA_MIME = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg", "webp": "image/webp",
                "mp4": "video/mp4", "webm": "video/webm", "wav": "audio/wav", "mp3": "audio/mpeg",
                "json": "application/json"}
-_ALLOW_PREFIX = ("vault/", "episodes/", "comfyui/assets/", "posters/")
+_ALLOW_PREFIX = ("vault/", "episodes/", "comfyui/assets/", "posters/", "comfyui/manifests/")
 
 
 def _b2b():
@@ -601,7 +601,7 @@ def _run_episode(jid: str, show: str, character: str, premise: str, n_scenes: in
             job["log"].append(f"Music bed skipped ({me})")
             music_path = None
         summary = produce_episode.produce_episode(show, character, premise,
-                                                  n_scenes=n_scenes, max_iter=2,
+                                                  n_scenes=n_scenes, max_iter=3,
                                                   music_path=music_path)
         ep = summary.get("episode", {})
         job["result"] = {"episode_url": ep.get("url"), "title": summary.get("episode_title"),

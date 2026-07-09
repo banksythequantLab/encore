@@ -47,6 +47,16 @@ Open `http://127.0.0.1:8090/` — the network page. Bank a cast into the vault
 
 `PUBLIC_DEMO_FORCE=1` re-locks generation to the local box (gallery stays public).
 
+## Integration notes (Genblaze)
+
+The generation path (stills, identity edits, video, voice, music) runs as Genblaze
+`Pipeline`/`Step` calls through the custom ComfyUI provider, with manifests sealed to B2 and
+`from_result` lineage linking retakes. The **identity judge** (Ollama Qwen3-VL) is currently
+orchestrated in application code around those runs rather than as a Genblaze Step: the SDK's
+step model doesn't yet have a first-class evaluator/conditional-retry primitive, so the loop
+lives in `pipeline.gen_still` and records its scores in the run logs. Folding judges into the
+SDK as a step type is the integration we'd most like to see upstream (see our filed issues).
+
 ## Safety notes
 
 - `.env` is gitignored; use a **scoped** B2 application key, never the master key.

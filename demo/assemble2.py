@@ -51,7 +51,7 @@ png_open = composer._title_card(
     "ENCORE", "The network that remembers",
     "a persistent cast · a living canon on Backblaze B2",
     tick_l="a streaming network run by one GPU", tick_r="100% local · $0 cloud")
-composer._still_segment(png_open, 3.2, os.path.join(D, "card_open.mp4"))
+composer._still_segment(png_open, 2.0, os.path.join(D, "card_open.mp4"))
 png_end = composer._title_card(
     "ENCORE", "encore.tlz.us",
     "github.com/banksythequantLab/encore — make a shot yourself, it's live",
@@ -67,11 +67,20 @@ L = {  # segment video length = VO + breathing room
     "b": round(VO["b4_network.wav"] + 1.2, 1), "c": round(VO["b2_vault.wav"] + 1.0, 1),
     "d": round(VO["b3_judge.wav"] + 1.0, 1), "e": round(VO["b5_stunt.wav"] + 4.0, 1),
 }
+# A2 is a split screen: the SAME face in two different episodes, side by side.
+a2cap = cap("SAME CHARACTER. DIFFERENT EPISODE.",
+            "left: 'Submersion' - right: 'Flooded Pursuit' - one identity anchor on B2")
+run(["-ss", "4.5", "-t", str(L["a2"]), "-i", "submersion-ca5f894e.mp4",
+     "-ss", "4.0", "-t", str(L["a2"]), "-i", "flooded-pursuit-b29fa1f3.mp4",
+     "-filter_complex",
+     "[0:v]scale=960:540,fps=30[l];[1:v]scale=960:540,fps=30[r];"
+     "[l][r]hstack,pad=1920:1080:0:270,format=yuv420p," + a2cap + "[v]",
+     "-map", "[v]", "-an", "-c:v", "libx264", "-preset", "fast", "-crf", "19", "v_a2.mp4"])
+print("beat v_a2 (split screen)", flush=True)
+
 beats = [
-    ("v_a1.mp4", ["-ss", "2", "-t", str(L["a1"]), "-i", "submersion-ca5f894e.mp4"],
+    ("v_a1.mp4", ["-ss", "4.5", "-t", str(L["a1"]), "-i", "submersion-ca5f894e.mp4"],
      "EVERY FRAME AI-GENERATED ON ONE HOME GPU", "from the live library — episode 'Submersion'"),
-    ("v_a2.mp4", ["-ss", "8", "-t", str(L["a2"]), "-i", "flooded-pursuit-b29fa1f3.mp4"],
-     "SAME CHARACTER. DIFFERENT EPISODE.", "Lena, identity-anchored — episode 'Flooded Pursuit'"),
     ("v_b.mp4", ["-ss", "0.5", "-t", str(L["b"]), "-i", "cap1_hero.mp4"],
      "ENCORE.TLZ.US — LIVE NOW", "the network airs itself · real premiere countdown, tonight 9PM"),
     ("v_c.mp4", ["-ss", "5.5", "-t", str(L["c"]), "-i", "cap3_sections.mp4"],
@@ -111,7 +120,8 @@ for o, d0 in zip(order, segd):
     starts.append(acc)
     acc += d0
 # order idx: 0 card, 1 a1, 2 a2, 3 b, 4 c, 5 d, 6 e, 7 card
-vo_at = [("b1_hook.wav", starts[1] + 0.3), ("b4_network.wav", starts[3] + 0.3),
+vo_at = [("b1_hook.wav", 0.5),                       # hook starts OVER the title card
+         ("b4_network.wav", starts[3] + 0.3),
          ("b2_vault.wav", starts[4] + 0.3), ("b3_judge.wav", starts[5] + 0.3),
          ("b5_stunt.wav", starts[6] + 0.3)]
 inputs, fl = [], []
@@ -121,8 +131,8 @@ for i, (w, t0) in enumerate(vo_at):
     fl.append(f"[{i}:a]aresample=48000,pan=stereo|c0=c0|c1=c0,adelay={ms}|{ms}[v{i}]")
 inputs += ["-stream_loop", "-1", "-i", "score.flac"]
 n = len(vo_at)
-fl.append(f"[{n}:a]aresample=48000,atrim=0:{total:.2f},volume=0.13,"
-          f"afade=t=in:st=0:d=1.5,afade=t=out:st={total - 3.5:.2f}:d=3.5[m]")
+fl.append(f"[{n}:a]aresample=48000,atrim=0:{total:.2f},volume=0.16,"
+          f"afade=t=in:st=0:d=0.4,afade=t=out:st={total - 3.5:.2f}:d=3.5[m]")
 fl.append("".join(f"[v{i}]" for i in range(n)) + f"[m]amix=inputs={n + 1}:duration=longest:"
           f"dropout_transition=0,volume=2.2,atrim=0:{total:.2f}[a]")
 run(inputs + ["-filter_complex", ";".join(fl), "-map", "[a]",

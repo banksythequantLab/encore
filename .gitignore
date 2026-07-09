@@ -14,3 +14,9 @@ _stage/
 *.mp4
 _*.log
 studio_old_backup.html
+demo/*.mp4
+demo/*.wav
+demo/*.flac
+demo/*.m4a
+demo/concat.txt
+demo/_*

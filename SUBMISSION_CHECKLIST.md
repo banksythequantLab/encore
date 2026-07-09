@@ -7,7 +7,7 @@
 - [x] **Demo video** — FINAL (v9, 55s): sponsor badge every frame, thesis-centered narration.
       - File: `demo/encore_demo_v5.mp4` (final build) — also delivered as encore_demo_v9.mp4
       - Public stream: https://encore.tlz.us/media/posters/demo/encore-demo-final.mp4
-      - Devpost wants YouTube/Vimeo: upload the mp4 to YouTube (unlisted is fine) and paste that link
+      - YouTube: https://youtu.be/LXRHYu_BHig
 - [ ] **Submit the Devpost form** (Derek — needs your account; paste from DEVPOST_SUBMISSION.md)
 
 ## Pre-submission verification (run the morning of)

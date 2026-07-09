@@ -10,6 +10,8 @@ whole studio runs on **one home GPU**.
 
 **Code:** https://github.com/banksythequantLab/encore
 
+**Demo video:** https://youtu.be/LXRHYu_BHig
+
 ---
 
 ## The problem

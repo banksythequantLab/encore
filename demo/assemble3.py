@@ -51,22 +51,25 @@ def cap(line):
 GAP = 0.55           # breath between lines
 CARD_OPEN = 6.5      # cinematic cold open (footage + title overlay, long enough to read)
 END_LEN = 5.5        # footage outro with URLs
-vo = [f"n{i}.wav" for i in range(1, 7)]
+vo = ["n1.wav", "n2.wav", "n3.wav", "n4.wav", "n7.wav", "n8.wav", "n5.wav", "n6.wav"]
+NB = len(vo)
 d = [dur(w) for w in vo]
 starts = [2.8]       # n1 speaks over the cold open after the title lands
-for i in range(1, 6):
+for i in range(1, NB):
     starts.append(starts[i - 1] + d[i - 1] + GAP)
-end_of_speech = starts[5] + d[5]
+end_of_speech = starts[NB - 1] + d[NB - 1]
 
 # beat i video runs from cut[i] to cut[i+1]
-cuts = [CARD_OPEN] + [starts[i] - 0.25 for i in range(1, 6)] + [end_of_speech + 0.7]
-seglen = [round(cuts[i + 1] - cuts[i], 2) for i in range(6)]
+cuts = [CARD_OPEN] + [starts[i] - 0.25 for i in range(1, NB)] + [end_of_speech + 0.7]
+seglen = [round(cuts[i + 1] - cuts[i], 2) for i in range(NB)]
 
 beats = [  # (source, ss, caption)
     ("flooded-pursuit-b29fa1f3.mp4", 13.0, "AI video today: every generation, a new stranger"),
     ("cap2_theater.mp4", 2.5, "encore.tlz.us - a live AI streaming network"),
     ("cap3_sections.mp4", 5.5, "identity anchors on Backblaze B2 - every take judged"),
     ("cap1_hero.mp4", 0.5, "serialized episodes - the story continues from B2"),
+    ("capA_maker.mp4", 1.0, "a live take, generated through the Genblaze SDK pipeline"),
+    ("capB_result.mp4", 1.5, "sealed Genblaze manifests on Backblaze B2 - same face, new scene"),
     ("submersion-ca5f894e.mp4", 12.0, "episodes, posters, scores - all stored and streamed from B2"),
     ("cap2_theater.mp4", 11.0, "the library: every episode this network has ever aired"),
 ]
@@ -119,9 +122,9 @@ for i, w in enumerate(vo):
     inputs += ["-i", w]
     fl.append(f"[{i}:a]aresample=48000,pan=stereo|c0=c0|c1=c0,adelay={ms}|{ms}[v{i}]")
 inputs += ["-stream_loop", "-1", "-i", "score.flac"]
-fl.append(f"[6:a]aresample=48000,atrim=0:{total:.2f},volume=0.16,"
+fl.append(f"[{NB}:a]aresample=48000,atrim=0:{total:.2f},volume=0.16,"
           f"afade=t=in:st=0:d=0.4,afade=t=out:st={total - 3.0:.2f}:d=3.0[m]")
-fl.append("".join(f"[v{i}]" for i in range(6)) + "[m]amix=inputs=7:duration=longest:"
+fl.append("".join(f"[v{i}]" for i in range(NB)) + f"[m]amix=inputs={NB + 1}:duration=longest:"
           f"dropout_transition=0,volume=2.4,atrim=0:{total:.2f}[a]")
 run(inputs + ["-filter_complex", ";".join(fl), "-map", "[a]", "-c:a", "aac", "a3.m4a"])
 run(["-i", "v3only.mp4", "-i", "a3.m4a", "-map", "0:v", "-map", "1:a",

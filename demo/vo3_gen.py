@@ -23,6 +23,9 @@ BEATS = {
     "n5": "Episodes, posters, music, narration — the studio builds all of it. "
           "Backblaze B2 keeps all of it.",
     "n6": "Seasons. Not clips. Encore — built on Backblaze B2.",
+    "n7": "And here it is, working. Pick a cast member. Describe a scene. Generate.",
+    "n8": "The job runs through the Genblaze pipeline — every step sealed as a manifest "
+          "on Backblaze B2. And there's the take. Same face. Brand-new scene.",
 }
 
 D = os.path.dirname(os.path.abspath(__file__))

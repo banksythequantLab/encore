@@ -566,8 +566,7 @@ def studio_state():
     busy = any(x["status"] == "running" for x in jobs)
     on_air = next((x for x in jobs if x["status"] == "running" and x["kind"] == "episode"), None)
     return {"queue_depth": _QUEUE.qsize(), "gpu": "busy" if busy else "idle",
-            "jobs": jobs, "on_air": on_air,
-            "next_air": _next_air_ts(), "started": _APP_STARTED}
+            "jobs": jobs, "on_air": on_air, "started": _APP_STARTED}
 
 
 class EpisodeReq(BaseModel):
@@ -577,58 +576,7 @@ class EpisodeReq(BaseModel):
     n_scenes: int = 2
 
 
-# ---------------------------------------------------------------------------
-# The network airs itself: one new episode per night, premise written by the
-# planner from the season memory on B2. ON AIR state + countdown feed the hero.
-# ---------------------------------------------------------------------------
-import datetime as _dt  # noqa: E402
-
-AIR_SHOW = os.environ.get("AIR_SHOW", "warlords-sniper")
-AIR_CHARACTER = os.environ.get("AIR_CHARACTER", "Lena")
-AIR_HOUR = int(os.environ.get("AIR_HOUR", "21"))  # local time, minute 0
-
-
-def _next_air_ts() -> float:
-    now = _dt.datetime.now()
-    target = now.replace(hour=AIR_HOUR, minute=0, second=0, microsecond=0)
-    if target <= now:
-        target += _dt.timedelta(days=1)
-    return target.timestamp()
-
-
-def _air_once() -> str:
-    """Queue tonight's episode: next-chapter premise from the B2 season memory."""
-    import season
-    premise = season.next_premise(AIR_SHOW, AIR_CHARACTER)
-    jid = _uuid.uuid4().hex[:12]
-    _JOBS[jid] = {"status": "queued", "stage": "queued", "log": [f"Nightly premiere — premise: {premise}"],
-                  "result": None, "error": None, "created": time.time(),
-                  "kind": "episode", "nightly": True}
-    _enqueue(jid, _run_episode, (AIR_SHOW, AIR_CHARACTER, premise, 2))
-    return jid
-
-
-def _air_scheduler():
-    while True:
-        wait = max(5.0, _next_air_ts() - time.time())
-        time.sleep(wait)
-        try:
-            _air_once()
-        except Exception:
-            pass
-        time.sleep(120)  # never double-fire within the same minute
-
-
-if os.environ.get("AIR_ENABLED", "1") == "1":
-    threading.Thread(target=_air_scheduler, daemon=True).start()
-
-
-@app.post("/air/now")
-def air_now(request: Request):
-    """Manual premiere trigger — local box only."""
-    if request.client.host not in ("127.0.0.1", "::1"):
-        raise HTTPException(status_code=403, detail="local only")
-    return {"job_id": _air_once()}
+# (Nightly self-airing scheduler removed 2026-07-09 — episodes are produced on demand only.)
 
 
 def _run_episode(jid: str, show: str, character: str, premise: str, n_scenes: int):

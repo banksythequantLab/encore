@@ -179,7 +179,6 @@
       <button class="playbtn" id="heroPlay" style="display:none"><span class="tri">&#9654;</span><span id="heroPlayLabel">Play</span></button>
       <span class="b2pill"><span class="b2" id="herob2"></span><span class="l">the network's memory</span></span>
       <span class="tag ok">100% local &middot; $0 cloud credits</span>
-      <span class="tag" id="airChip" style="display:none;font-family:'IBM Plex Mono'"></span>
     </div>
     <div class="heroMeta" id="heroMeta"></div>
   </div></div>
@@ -480,27 +479,16 @@ async function loadFloor(){
 }
 loadFloor();setInterval(loadFloor,3000);
 
-/* ── ON AIR / countdown ── */
-let NEXT_AIR=null;
+/* ── ON AIR indicator ── */
 function updateAir(j){
   const kick=document.getElementById('heroKick');
-  NEXT_AIR=j.next_air||null;
   if(j.on_air){
-    kick.innerHTML='<span style="color:#ff5a6e">&#9679; ON AIR</span> — now filming tonight\'s episode &middot; '+
+    kick.innerHTML='<span style="color:#ff5a6e">&#9679; ON AIR</span> — now filming an episode &middot; '+
       String(j.on_air.stage||'').replace(/</g,'&lt;').slice(0,80);
-    document.getElementById('airChip').style.display='none';
   }else{
     kick.innerHTML='tonight on encore &middot; a persistent cast &middot; a living canon on b2';
   }
 }
-setInterval(()=>{
-  const chip=document.getElementById('airChip');
-  if(!NEXT_AIR){chip.style.display='none';return;}
-  const s=Math.max(0,Math.floor(NEXT_AIR-Date.now()/1000));
-  const h=Math.floor(s/3600),m=Math.floor(s%3600/60),ss=s%60;
-  chip.textContent=`next episode premieres in ${h}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
-  chip.style.display='';
-},1000);
 
 /* ── Community strip ── */
 let COMM=[];

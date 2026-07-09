@@ -2,7 +2,7 @@
 
 **Tagline:** Everyone else's AI video demo makes a disposable clip. Encore is a **network whose
 cast comes back**: identity anchors and the season's memory live on **Backblaze B2**, every take
-is judged against canon, and a new episode **airs itself nightly** — each one continuing the
+is judged against canon, and full episodes are produced **end-to-end** — each one continuing the
 story the network remembers from B2. Continuity as infrastructure, not a prompt trick. And the
 whole studio runs on **one home GPU**.
 
@@ -26,10 +26,9 @@ let a local vision judge **grade every take against the anchor** until the right
 
 ## What it does
 
-- **The network airs itself.** A nightly scheduler asks the planner for the *next chapter* —
-  written from the season memory on B2 — produces it unattended, and premieres it with a live
-  countdown and an "● ON AIR — now filming" hero while the GPU works. Episodes open with a
-  "Previously on Encore…" card recalled from B2.
+- **Serialized episodes.** The planner reads the season-so-far from B2 and writes the next
+  chapter; episodes open with a "Previously on Encore…" card recalled from B2, and the hero
+  flips to "● ON AIR — now filming" while the GPU works.
 - **A real streaming site.** Tonight's featured episode, poster rails, a theater player, cast
   pages — every byte of media streamed from B2 through a range-aware proxy.
 - **Cast once, reuse forever.** Identity anchors live in the B2 Series Vault (SHA-256

@@ -7,6 +7,8 @@ produced by **one home GPU**, with **Backblaze B2** as the network's library and
 **Live:** https://encore.tlz.us — the library, the cast, the studio floor, and the maker are all
 real and public. Anything you generate renders on the actual GPU and lands in the actual library.
 
+**Code:** https://github.com/banksythequantLab/encore
+
 ---
 
 ## The problem
@@ -90,6 +92,10 @@ Everything above is live and was verified on real public runs — nothing is moc
   verified end-to-end (31.9s ACE-Step flac, ffprobe-checked, ducked by the composer).
 
 ## SDK feedback (feedback prize)
+
+Filed as [backblaze-labs/genblaze#132](https://github.com/backblaze-labs/genblaze/issues/132)
+(Windows `file://` bug) and [#133](https://github.com/backblaze-labs/genblaze/issues/133)
+(silent params filtering).
 
 - **Contributed a self-hosted ComfyUI provider** — the highest-leverage extension for teams
   already running local generation.

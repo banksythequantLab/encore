@@ -246,17 +246,29 @@ def api_episodes():
     """Sealed episodes in the B2 library (skips the Object-Locked canon copies)."""
     eps = []
     posters = set(_b2_list("posters/"))
+    # Upload times via S3 listing so the library sorts newest-first.
+    times = {}
+    try:
+        s3 = _canon_s3()
+        pg = s3.get_paginator("list_objects_v2")
+        for page in pg.paginate(Bucket=os.environ["B2_BUCKET"], Prefix="episodes/"):
+            for o in page.get("Contents", []):
+                times[o["Key"]] = o["LastModified"].timestamp()
+    except Exception:
+        pass
     for k in _b2_list("episodes/"):
         if not k.endswith(".mp4") or "/canon/" in k:
             continue
         parts = k.split("/")
         show = parts[1] if len(parts) > 1 else "?"
         stem = parts[-1].rsplit(".", 1)[0]
-        title = stem.rsplit("-", 1)[0].replace("-", " ").title()
+        title = " ".join(w.capitalize() for w in stem.rsplit("-", 1)[0].split("-"))
         sha = stem.rsplit("-", 1)[-1] if "-" in stem else ""
         pk = f"posters/{show}/{stem}.png"
         eps.append({"show": show, "key": k, "url": f"/media/{k}", "title": title, "sha": sha,
+                    "aired": times.get(k),
                     "poster_url": f"/media/{pk}" if pk in posters else None})
+    eps.sort(key=lambda e: e.get("aired") or 0, reverse=True)
     return {"episodes": eps}
 
 

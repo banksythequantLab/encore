@@ -257,6 +257,12 @@
     <button class="btn" id="canonBtn" style="background:linear-gradient(180deg,#ff8a9d,#e4002b);color:#fff">Try to delete the cast bible</button>
     <div class="prog" id="canonOut" style="margin-top:14px"></div>
   </div>
+
+  <div style="margin-top:28px">
+    <div class="head"><h2 style="font-size:38px">The Ledger</h2>
+      <span class="sub">every take is a sealed Genblaze manifest on B2 &mdash; retakes carry lineage</span></div>
+    <div id="ledgerRoot" class="mono" style="font-size:12.5px"><div class="empty">Reading manifests from B2&hellip;</div></div>
+  </div>
 </div></section>
 
 <footer><div class="wrap"><div class="foot">
@@ -567,6 +573,28 @@ async function loadVitals(){
   }catch(e){}
 }
 loadCanon();loadVitals();setInterval(loadVitals,30000);
+
+/* ── The Ledger (provenance manifests) ── */
+async function loadLedger(){
+  const root=document.getElementById('ledgerRoot');
+  try{
+    const j=await (await fetch('/api/provenance/recent?n=10')).json();
+    if(!j.runs||!j.runs.length){root.innerHTML='<div class="empty">No manifests yet.</div>';return;}
+    root.innerHTML=j.runs.map(r=>{
+      const a=(r.assets&&r.assets[0])||{};
+      const link=a.b2_key?`<a href="/media/${esc(a.b2_key)}" target="_blank" style="color:var(--cyan)">${esc((a.sha256||'').slice(0,12))}…</a>`:'—';
+      const retake=r.parent_run_id?`<span style="color:var(--warn)">↺ retake of ${esc(String(r.parent_run_id).slice(0,8))}</span>`:'<span style="color:#5f6f8f">original take</span>';
+      const t=(r.completed_at||'').replace('T',' ').slice(5,16);
+      return `<div style="display:flex;gap:14px;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);flex-wrap:wrap">
+        <span style="color:#5f6f8f;flex:none">${esc(t)}</span>
+        <span style="color:var(--cyan2);flex:none">${esc(r.model||'?')}</span>
+        <span style="flex:1;min-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dim)">${esc(r.name||'')} · ${esc(r.prompt||'')}</span>
+        <span style="flex:none">${retake}</span>
+        <span style="flex:none">sha ${link}</span></div>`;
+    }).join('');
+  }catch(e){root.innerHTML='<div class="empty">Ledger unreachable.</div>';}
+}
+loadLedger();
 
 loadVault();loadEpisodes();
 </script>

@@ -353,6 +353,37 @@ def canon_attack(show: str = "warlords-sniper"):
                 "retain_until": str(ret["RetainUntilDate"])[:19]}
 
 
+@app.get("/api/provenance/recent")
+def provenance_recent(n: int = 10):
+    """The ledger: most recent Genblaze run manifests from B2, with retake lineage."""
+    import json
+    s3 = _canon_s3()
+    bucket = os.environ["B2_BUCKET"]
+    objs = []
+    pg = s3.get_paginator("list_objects_v2")
+    for page in pg.paginate(Bucket=bucket, Prefix="comfyui/manifests/"):
+        objs.extend(page.get("Contents", []))
+    objs.sort(key=lambda o: o["LastModified"], reverse=True)
+    out = []
+    for o in objs[:max(1, min(20, n))]:
+        try:
+            d = json.loads(s3.get_object(Bucket=bucket, Key=o["Key"])["Body"].read())
+        except Exception:
+            continue
+        run = d.get("run", {})
+        steps = run.get("steps", [])
+        st = steps[-1] if steps else {}
+        assets = [{"sha256": a.get("sha256"), "b2_key": (a.get("metadata") or {}).get("b2_key"),
+                   "media_type": a.get("media_type")} for a in (st.get("assets") or [])]
+        out.append({"run_id": run.get("run_id"), "name": run.get("name"),
+                    "parent_run_id": run.get("parent_run_id"),
+                    "completed_at": run.get("completed_at"),
+                    "model": st.get("model"), "prompt": (st.get("prompt") or "")[:110],
+                    "canonical_hash": d.get("canonical_hash"), "assets": assets,
+                    "manifest_key": o["Key"]})
+    return {"runs": out}
+
+
 @app.get("/api/metrics")
 def api_metrics():
     """Network vitals for the credibility strip."""

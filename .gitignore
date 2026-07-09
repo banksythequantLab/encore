@@ -1,0 +1,16 @@
+# secrets — NEVER commit
+.env
+# virtualenv
+.venv/
+# python cache
+__pycache__/
+*.pyc
+# local run logs (keep the _*.py proof scripts, drop their output)
+_*.out
+_*.err
+_stage/
+
+# big binaries / local artifacts
+*.mp4
+_*.log
+studio_old_backup.html

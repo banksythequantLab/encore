@@ -1,0 +1,6 @@
+tunnel: f428440d-9e33-4624-82ed-6b2be5317d24
+credentials-file: C:\Users\solti\.cloudflared\f428440d-9e33-4624-82ed-6b2be5317d24.json
+ingress:
+  - hostname: encore.tlz.us
+    service: http://127.0.0.1:8090
+  - service: http_status:404

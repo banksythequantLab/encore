@@ -1,0 +1,102 @@
+{
+  "show": "warlords-sniper",
+  "character": "Lena",
+  "episode_title": "Flooded Pursuit",
+  "logline": "Lena navigates flooded streets and a perilous rooftop to take down a warlord convoy.",
+  "scenes": 2,
+  "local_mp4": "C:\\Users\\solti\\AppData\\Local\\Temp\\encore_ep_mcnum92y\\episode.mp4",
+  "duration_s": 24.4,
+  "episode": {
+    "b2_key": "episodes/warlords-sniper/flooded-pursuit-b29fa1f3.mp4",
+    "url": "/media/episodes/warlords-sniper/flooded-pursuit-b29fa1f3.mp4",
+    "sha256": "b29fa1f3a049ac25d3bc9cfd50b6e1d14a2432bebfea27383868f2aeb88bc22f",
+    "size": 11633446
+  },
+  "scene_clips": [
+    {
+      "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/f3/dd/f3dd111eca8bc8e6d49fe4281bfea3a54e8f2ce0ac4d200ea7e7f7abdb39e787.mp4",
+      "sha256": "f3dd111eca8bc8e6d49fe4281bfea3a54e8f2ce0ac4d200ea7e7f7abdb39e787",
+      "b2_key": "comfyui/assets/f3/dd/f3dd111eca8bc8e6d49fe4281bfea3a54e8f2ce0ac4d200ea7e7f7abdb39e787.mp4",
+      "size": 396919,
+      "dims": [
+        832,
+        832
+      ],
+      "segments": [
+        {
+          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/63/0f/630ff867b4480fbd0755bfee1450a8a014ab8820ab38083f7b52246d23cc2e42.mp4",
+          "sha256": "630ff867b4480fbd0755bfee1450a8a014ab8820ab38083f7b52246d23cc2e42",
+          "b2_key": "comfyui/assets/63/0f/630ff867b4480fbd0755bfee1450a8a014ab8820ab38083f7b52246d23cc2e42.mp4",
+          "size": 600082,
+          "dims": [
+            832,
+            832
+          ]
+        },
+        {
+          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/3b/75/3b759da0d0049c4b8105c9efae7f98924118612f875c633f81107979fb3d6419.mp4",
+          "sha256": "3b759da0d0049c4b8105c9efae7f98924118612f875c633f81107979fb3d6419",
+          "b2_key": "comfyui/assets/3b/75/3b759da0d0049c4b8105c9efae7f98924118612f875c633f81107979fb3d6419.mp4",
+          "size": 531353,
+          "dims": [
+            832,
+            480
+          ]
+        },
+        {
+          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/f3/dd/f3dd111eca8bc8e6d49fe4281bfea3a54e8f2ce0ac4d200ea7e7f7abdb39e787.mp4",
+          "sha256": "f3dd111eca8bc8e6d49fe4281bfea3a54e8f2ce0ac4d200ea7e7f7abdb39e787",
+          "b2_key": "comfyui/assets/f3/dd/f3dd111eca8bc8e6d49fe4281bfea3a54e8f2ce0ac4d200ea7e7f7abdb39e787.mp4",
+          "size": 396919,
+          "dims": [
+            832,
+            480
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/32/94/3294edec1f80a82497ddba0edfca5b91efd2e20aa6826bff85d2ffdbbaee6ab0.mp4",
+      "sha256": "3294edec1f80a82497ddba0edfca5b91efd2e20aa6826bff85d2ffdbbaee6ab0",
+      "b2_key": "comfyui/assets/32/94/3294edec1f80a82497ddba0edfca5b91efd2e20aa6826bff85d2ffdbbaee6ab0.mp4",
+      "size": 154269,
+      "dims": [
+        832,
+        832
+      ],
+      "segments": [
+        {
+          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/10/50/10502247e9e83fea86253023b9fdd15638f535de9c5121ec20620e725e216480.mp4",
+          "sha256": "10502247e9e83fea86253023b9fdd15638f535de9c5121ec20620e725e216480",
+          "b2_key": "comfyui/assets/10/50/10502247e9e83fea86253023b9fdd15638f535de9c5121ec20620e725e216480.mp4",
+          "size": 222897,
+          "dims": [
+            832,
+            832
+          ]
+        },
+        {
+          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/4b/7b/4b7bf634b2c7fd206a0058b860731247e57193567af6bb7e398ece91c08b3e97.mp4",
+          "sha256": "4b7bf634b2c7fd206a0058b860731247e57193567af6bb7e398ece91c08b3e97",
+          "b2_key": "comfyui/assets/4b/7b/4b7bf634b2c7fd206a0058b860731247e57193567af6bb7e398ece91c08b3e97.mp4",
+          "size": 204897,
+          "dims": [
+            832,
+            480
+          ]
+        },
+        {
+          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/32/94/3294edec1f80a82497ddba0edfca5b91efd2e20aa6826bff85d2ffdbbaee6ab0.mp4",
+          "sha256": "3294edec1f80a82497ddba0edfca5b91efd2e20aa6826bff85d2ffdbbaee6ab0",
+          "b2_key": "comfyui/assets/32/94/3294edec1f80a82497ddba0edfca5b91efd2e20aa6826bff85d2ffdbbaee6ab0.mp4",
+          "size": 154269,
+          "dims": [
+            832,
+            480
+          ]
+        }
+      ]
+    }
+  ],
+  "seconds_elapsed": 732.8
+}

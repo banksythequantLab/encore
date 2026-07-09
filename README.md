@@ -1,0 +1,54 @@
+# Encore — a streaming network run by one GPU
+
+Live: **https://encore.tlz.us**
+
+Encore is a Backblaze Generative Media Hackathon entry: a local-first AI studio
+that produces **episodic** content — the same cast returning episode after
+episode — on a single home GPU, with **Backblaze B2** as the studio's library
+and its memory. See `DEVPOST_SUBMISSION.md` for the full story.
+
+## What's in here
+
+| Module | Role |
+|---|---|
+| `app.py` | FastAPI app: the public site, FIFO GPU queue, maker + episode jobs, B2 media proxy |
+| `studio.html` | The network front page (library rails, theater, cast, maker, live studio floor) |
+| `comfyui_provider.py` | Genblaze provider for self-hosted ComfyUI (submit/poll/fetch_output) |
+| `pipeline.py` | gen_still/gen_video/gen_voice + self-correction loop + seal & Object Lock |
+| `vault.py` | B2 Series Vault: content-addressable cast anchors + versioned season.json |
+| `produce_episode.py` | premise → plan (Ollama) → keyframes → judged retakes → chained Wan i2v |
+| `composer.py` | VO mix, ducked music bed, title/end cards, episode assembly (ffmpeg) |
+| `posters.py` | 2:3 episode key art (z-image-turbo) → B2 posters/ |
+| `music.py` | Instrumental beds via ACE-Step 3.5B on the same GPU |
+| `judges.py` | Local identity judge (Ollama qwen3-vl): anchor vs. take, score + feedback |
+| `workflows/` | ComfyUI workflow templates the provider loads (one JSON per model) |
+
+## Requirements
+
+- Windows or Linux box with an RTX-class GPU (24 GB tested)
+- **ComfyUI** at `127.0.0.1:8188` with: `z-image-turbo`, `qwen-image-edit`,
+  Wan 2.2 i2v, `ace_step_v1_3.5b.safetensors`, and a TTS voice node
+- **Ollama** at `127.0.0.1:11434` with a `qwen3-vl` vision model
+- A **Backblaze B2** bucket + scoped application key
+- `ffmpeg`/`ffprobe` on PATH
+
+## Setup
+
+```bash
+python -m venv .venv && .venv/Scripts/activate   # or source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env                             # fill in B2_* etc.
+set COMFY_WORKFLOWS=./workflows                  # or point at your own templates
+uvicorn app:app --port 8090
+```
+
+Open `http://127.0.0.1:8090/` — the network page. Bank a cast into the vault
+(`vault.py`), then make shots and episodes from the page.
+
+`PUBLIC_DEMO_FORCE=1` re-locks generation to the local box (gallery stays public).
+
+## Safety notes
+
+- `.env` is gitignored; use a **scoped** B2 application key, never the master key.
+- Public episodes cost real GPU minutes (~12 min each) — put the maker behind
+  caps or `PUBLIC_DEMO_FORCE=1` if you don't want strangers queueing your card.

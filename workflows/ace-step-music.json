@@ -1,0 +1,33 @@
+{
+  "id": "ace-step-music",
+  "name": "ACE-Step Music Bed",
+  "type": "audio",
+  "description": "Instrumental music bed via ACE-Step v1 3.5B (text tags -> audio)",
+  "builtin": false,
+  "inputs": {
+    "prompt": {"nodeId": "enc", "field": "tags", "label": "Style tags", "type": "string"},
+    "seed": {"nodeId": "ks", "field": "seed", "label": "Seed", "type": "int"},
+    "length": {"nodeId": "lat", "field": "seconds", "label": "Seconds", "type": "float"},
+    "filename_prefix": {"nodeId": "save", "field": "filename_prefix", "label": "Prefix", "type": "string"}
+  },
+  "outputs": {"audio": {"nodeId": "save", "class_type": "SaveAudio"}},
+  "workflow": {
+    "ckpt": {"class_type": "CheckpointLoaderSimple", "_meta": {"title": "Load ACE-Step"},
+             "inputs": {"ckpt_name": "ace_step_v1_3.5b.safetensors"}},
+    "lat": {"class_type": "EmptyAceStepLatentAudio", "_meta": {"title": "Latent audio"},
+            "inputs": {"seconds": 32, "batch_size": 1}},
+    "enc": {"class_type": "TextEncodeAceStepAudio", "_meta": {"title": "Tags"},
+            "inputs": {"clip": ["ckpt", 1], "tags": "cinematic film score, instrumental",
+                       "lyrics": "[inst]", "lyrics_strength": 0.99}},
+    "neg": {"class_type": "ConditioningZeroOut", "_meta": {"title": "Negative"},
+            "inputs": {"conditioning": ["enc", 0]}},
+    "ks": {"class_type": "KSampler", "_meta": {"title": "Sample"},
+           "inputs": {"model": ["ckpt", 0], "positive": ["enc", 0], "negative": ["neg", 0],
+                      "latent_image": ["lat", 0], "seed": 123456, "steps": 50, "cfg": 5.0,
+                      "sampler_name": "euler", "scheduler": "simple", "denoise": 1.0}},
+    "dec": {"class_type": "VAEDecodeAudio", "_meta": {"title": "Decode"},
+            "inputs": {"samples": ["ks", 0], "vae": ["ckpt", 2]}},
+    "save": {"class_type": "SaveAudio", "_meta": {"title": "Save"},
+             "inputs": {"audio": ["dec", 0], "filename_prefix": "gb_music"}}
+  }
+}

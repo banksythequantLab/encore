@@ -1,0 +1,21 @@
+{
+  "id": "tts-custom-voice",
+  "name": "Qwen3 TTS (Preset Voice)",
+  "type": "audio",
+  "description": "Text-to-speech with preset voices",
+  "builtin": true,
+  "inputs": {
+    "text": { "nodeId": "tts", "field": "text", "label": "Text", "type": "string" },
+    "speaker": { "nodeId": "tts", "field": "speaker", "label": "Speaker", "type": "select",
+      "options": ["Aiden","Eric","Serena","Ethan","Luna","Vivian","Ryan","Olivia","Noah"],
+      "default": "Aiden" }
+  },
+  "outputs": { "audio": { "nodeId": "tts", "class_type": "CustomVoiceNode" } },
+  "workflow": {
+    "tts": {
+      "inputs": { "text": "", "speaker": "Aiden", "instruct": "", "model_choice": "1.7B", "attention": "auto", "unload_model_after_generate": true },
+      "class_type": "CustomVoiceNode",
+      "_meta": { "title": "Custom Voice TTS" }
+    }
+  }
+}

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Verify AI Media — provenance you can check</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#141926; --line:#26304a; --ink:#e7ecf5; --dim:#93a0bd;
+    --ok:#2fd06a; --bad:#ff5470; --warn:#ffb020; --accent:#5b8cff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#16203a 0%,var(--bg) 60%);
+    color:var(--ink);font:16px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+  .wrap{max-width:760px;margin:0 auto;padding:48px 20px 80px}
+  h1{font-size:30px;margin:0 0 6px;letter-spacing:-.02em}
+  .sub{color:var(--dim);margin:0 0 28px}
+  .drop{border:2px dashed var(--line);border-radius:16px;background:var(--panel);
+    padding:44px 24px;text-align:center;cursor:pointer;transition:.15s}
+  .drop:hover,.drop.hot{border-color:var(--accent);background:#182034}
+  .drop b{color:var(--ink)} .drop small{color:var(--dim);display:block;margin-top:8px}
+  .drop .big{font-size:44px;line-height:1;margin-bottom:10px}
+  input[type=file]{display:none}
+  .card{margin-top:26px;border:1px solid var(--line);border-radius:16px;background:var(--panel);overflow:hidden;display:none}
+  .banner{padding:20px 24px;display:flex;align-items:center;gap:14px;font-weight:700;font-size:20px}
+  .banner .ico{font-size:26px}
+  .ok .banner{background:linear-gradient(90deg,rgba(47,208,106,.18),transparent);color:var(--ok)}
+  .bad .banner{background:linear-gradient(90deg,rgba(255,84,112,.18),transparent);color:var(--bad)}
+  .warn .banner{background:linear-gradient(90deg,rgba(255,176,32,.16),transparent);color:var(--warn)}
+  .banner small{display:block;font-weight:400;font-size:13px;color:var(--dim);margin-top:2px}
+  .rows{padding:6px 24px 22px}
+  .row{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-top:1px solid var(--line)}
+  .row .k{color:var(--dim)} .row .v{text-align:right;word-break:break-word;max-width:70%}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  .foot{color:var(--dim);font-size:13px;margin-top:26px;text-align:center}
+  .foot b{color:var(--accent)}
+  .spin{display:none;margin-top:26px;text-align:center;color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Verify AI Media</h1>
+  <p class="sub">Drop any image or video. If it was generated through our pipeline, it carries a cryptographic provenance seal — and this page proves whether that seal is intact.</p>
+
+  <label class="drop" id="drop">
+    <div class="big">⤓</div>
+    <b>Drop a file here, or click to choose</b>
+    <small>PNG · JPG · WebP · MP4 · MP3 — checked locally against its sealed manifest</small>
+    <input type="file" id="file" accept="image/*,video/*,audio/*"/>
+  </label>
+
+  <div class="spin" id="spin">Checking the seal…</div>
+
+  <div class="card" id="card">
+    <div class="banner"><span class="ico" id="ico"></span><span><span id="title"></span><small id="subtitle"></small></span></div>
+    <div class="rows" id="rows"></div>
+  </div>
+
+  <p class="foot">Provenance sealed with <b>Genblaze</b> · stored immutably on <b>Backblaze B2</b></p>
+</div>
+
+<script>
+const drop=document.getElementById('drop'),file=document.getElementById('file'),
+      card=document.getElementById('card'),spin=document.getElementById('spin'),
+      ico=document.getElementById('ico'),title=document.getElementById('title'),
+      subtitle=document.getElementById('subtitle'),rows=document.getElementById('rows');
+
+['dragenter','dragover'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('hot')}));
+['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('hot')}));
+drop.addEventListener('drop',ev=>{if(ev.dataTransfer.files[0])check(ev.dataTransfer.files[0])});
+file.addEventListener('change',()=>{if(file.files[0])check(file.files[0])});
+
+function row(k,v){return v?`<div class="row"><span class="k">${k}</span><span class="v mono">${v}</span></div>`:''}
+
+async function check(f){
+  card.style.display='none'; spin.style.display='block';
+  const fd=new FormData(); fd.append('file',f);
+  let j;
+  try{ j=await (await fetch('/verify',{method:'POST',body:fd})).json(); }
+  catch(e){ spin.style.display='none'; alert('Verify service unreachable'); return; }
+  spin.style.display='none';
+  const p=j.provenance||{};
+  let cls,icon,ttl,sub;
+  if(j.verified){cls='ok';icon='✓';ttl='Verified authentic';sub='Valid, untampered provenance seal.';}
+  else if(j.sealed){cls='bad';icon='✕';ttl='Tampered';sub='This file was sealed, but its content no longer matches its provenance.';}
+  else {cls='warn';icon='⚠';ttl='No provenance';sub='No seal found — origin cannot be verified.';}
+  card.className='card '+cls; ico.textContent=icon; title.textContent=ttl; subtitle.textContent=sub;
+  rows.innerHTML =
+    row('File', j.filename) +
+    row('Model', p.model) +
+    row('Prompt', p.prompt) +
+    row('Provider', p.provider) +
+    row('Created', p.created) +
+    row('Run ID', p.run_id) +
+    row('Manifest hash', p.canonical_hash) +
+    row('Sealed', String(j.sealed)) + row('Verified', String(j.verified));
+  card.style.display='block';
+}
+</script>
+</body>
+</html>

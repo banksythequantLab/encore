@@ -13,14 +13,16 @@ import produce_episode  # noqa: E402
 
 BEATS = {
     "n1": "Every AI video tool gives you a clip. And a stranger, every time you press generate.",
-    "n2": "Encore is different. It's a network. A cast that comes back, episode after episode.",
-    "n3": "Lena's identity lives in a vault on Backblaze B2. Every take is judged against it. "
-          "Wrong face? Reshoot.",
-    "n4": "Full episodes, end to end. The planner reads the story so far from B2, "
-          "and writes the next chapter.",
-    "n5": "Episodes, music, posters, narration — the studio builds all of it, "
-          "and Backblaze B2 keeps all of it.",
-    "n6": "Seasons. Not clips. This is Encore.",
+    "n2": "Encore is different. It's a streaming network, with a cast that comes back, "
+          "episode after episode.",
+    "n3": "Here's the secret. The studio's memory doesn't live in the model. It lives on "
+          "Backblaze B2. The cast's identity. The season's story. Every episode ever aired. "
+          "And every new take is judged against that memory. Wrong face? Reshoot.",
+    "n4": "So every episode continues the last one. The planner reads the story so far, "
+          "from Backblaze B2, and writes the next chapter.",
+    "n5": "Episodes, posters, music, narration — the studio builds all of it. "
+          "Backblaze B2 keeps all of it.",
+    "n6": "Seasons. Not clips. Encore — built on Backblaze B2.",
 }
 
 D = os.path.dirname(os.path.abspath(__file__))

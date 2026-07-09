@@ -1,53 +1,53 @@
 {
   "show": "warlords-sniper",
   "character": "Lena",
-  "episode_title": "Submersion",
-  "logline": "Lena races against rising waters and ruthless hunters in a drowned metro, each breath a calculated shot toward survival.",
+  "episode_title": "Signal in the Shadows",
+  "logline": "Lena uncovers a corporate conspiracy behind the floods, forcing her to choose between survival and sparking a rebellion.",
   "scenes": 2,
-  "local_mp4": "C:\\Users\\solti\\AppData\\Local\\Temp\\encore_ep_kmt1xu_e\\episode.mp4",
-  "duration_s": 24.4,
+  "local_mp4": "C:\\Users\\solti\\AppData\\Local\\Temp\\encore_ep_tsp4avrg\\episode.mp4",
+  "duration_s": 27.0,
   "episode": {
-    "b2_key": "episodes/warlords-sniper/submersion-ca5f894e.mp4",
-    "url": "/media/episodes/warlords-sniper/submersion-ca5f894e.mp4",
-    "sha256": "ca5f894e1ee96459348b5ac74176a7bdfdd797fbb1057a54b1723c651bc6f5e5",
-    "size": 13996300
+    "b2_key": "episodes/warlords-sniper/signal-in-the-shadows-a84e14d7.mp4",
+    "url": "/media/episodes/warlords-sniper/signal-in-the-shadows-a84e14d7.mp4",
+    "sha256": "a84e14d778e4ed5d966e436a652b292632d867e0305ecb582055e748fab15067",
+    "size": 12330610
   },
   "scene_clips": [
     {
-      "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/9e/5e/9e5e8e15417ea189994dd636946329e8fe8aa5c3781c286f36615fa203ac1fa7.mp4",
-      "sha256": "9e5e8e15417ea189994dd636946329e8fe8aa5c3781c286f36615fa203ac1fa7",
-      "b2_key": "comfyui/assets/9e/5e/9e5e8e15417ea189994dd636946329e8fe8aa5c3781c286f36615fa203ac1fa7.mp4",
-      "size": 161596,
+      "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/b0/5b/b05be332448e53ddd51c1eb08f82abed1c42ee5315fbaad1501e3b5fefaf4164.mp4",
+      "sha256": "b05be332448e53ddd51c1eb08f82abed1c42ee5315fbaad1501e3b5fefaf4164",
+      "b2_key": "comfyui/assets/b0/5b/b05be332448e53ddd51c1eb08f82abed1c42ee5315fbaad1501e3b5fefaf4164.mp4",
+      "size": 184796,
       "dims": [
         832,
         832
       ],
       "segments": [
         {
-          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/ea/ca/eaca830b006f03b85753743e7e013f985995ffc65b6720363cd9ca42d9b1189c.mp4",
-          "sha256": "eaca830b006f03b85753743e7e013f985995ffc65b6720363cd9ca42d9b1189c",
-          "b2_key": "comfyui/assets/ea/ca/eaca830b006f03b85753743e7e013f985995ffc65b6720363cd9ca42d9b1189c.mp4",
-          "size": 280525,
+          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/f1/2b/f12b9cab3d6808c0ac88d57c5316ff217879144adca69d4ae8753743cb69d41b.mp4",
+          "sha256": "f12b9cab3d6808c0ac88d57c5316ff217879144adca69d4ae8753743cb69d41b",
+          "b2_key": "comfyui/assets/f1/2b/f12b9cab3d6808c0ac88d57c5316ff217879144adca69d4ae8753743cb69d41b.mp4",
+          "size": 319652,
           "dims": [
             832,
             832
           ]
         },
         {
-          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/8c/25/8c255429b8242f810e20be772b149c6d86a924a237c21a99509a25411c728fed.mp4",
-          "sha256": "8c255429b8242f810e20be772b149c6d86a924a237c21a99509a25411c728fed",
-          "b2_key": "comfyui/assets/8c/25/8c255429b8242f810e20be772b149c6d86a924a237c21a99509a25411c728fed.mp4",
-          "size": 181488,
+          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/8b/ee/8beefac5af99ec5aa10b09395a25d21171f54949152340726df06f672f0a3641.mp4",
+          "sha256": "8beefac5af99ec5aa10b09395a25d21171f54949152340726df06f672f0a3641",
+          "b2_key": "comfyui/assets/8b/ee/8beefac5af99ec5aa10b09395a25d21171f54949152340726df06f672f0a3641.mp4",
+          "size": 229632,
           "dims": [
             832,
             480
           ]
         },
         {
-          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/9e/5e/9e5e8e15417ea189994dd636946329e8fe8aa5c3781c286f36615fa203ac1fa7.mp4",
-          "sha256": "9e5e8e15417ea189994dd636946329e8fe8aa5c3781c286f36615fa203ac1fa7",
-          "b2_key": "comfyui/assets/9e/5e/9e5e8e15417ea189994dd636946329e8fe8aa5c3781c286f36615fa203ac1fa7.mp4",
-          "size": 161596,
+          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/b0/5b/b05be332448e53ddd51c1eb08f82abed1c42ee5315fbaad1501e3b5fefaf4164.mp4",
+          "sha256": "b05be332448e53ddd51c1eb08f82abed1c42ee5315fbaad1501e3b5fefaf4164",
+          "b2_key": "comfyui/assets/b0/5b/b05be332448e53ddd51c1eb08f82abed1c42ee5315fbaad1501e3b5fefaf4164.mp4",
+          "size": 184796,
           "dims": [
             832,
             480
@@ -56,40 +56,40 @@
       ]
     },
     {
-      "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/eb/bc/ebbc766985b628b20514218862c561b9a931d6f977ff115f516db5d800058d79.mp4",
-      "sha256": "ebbc766985b628b20514218862c561b9a931d6f977ff115f516db5d800058d79",
-      "b2_key": "comfyui/assets/eb/bc/ebbc766985b628b20514218862c561b9a931d6f977ff115f516db5d800058d79.mp4",
-      "size": 484128,
+      "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/1e/78/1e784b376a9a58e5376a86f3f70a5a2418114963cf6464629fbd24b2acf62696.mp4",
+      "sha256": "1e784b376a9a58e5376a86f3f70a5a2418114963cf6464629fbd24b2acf62696",
+      "b2_key": "comfyui/assets/1e/78/1e784b376a9a58e5376a86f3f70a5a2418114963cf6464629fbd24b2acf62696.mp4",
+      "size": 358691,
       "dims": [
         832,
         832
       ],
       "segments": [
         {
-          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/c6/05/c60544c54ff62b678fa311a1b4605f156a75e7f4e9457b5e836fbd152a963652.mp4",
-          "sha256": "c60544c54ff62b678fa311a1b4605f156a75e7f4e9457b5e836fbd152a963652",
-          "b2_key": "comfyui/assets/c6/05/c60544c54ff62b678fa311a1b4605f156a75e7f4e9457b5e836fbd152a963652.mp4",
-          "size": 724193,
+          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/f2/9a/f29aa9712eda525569fa5c264f949f329c6c5683ed7b2057d324c533f2858939.mp4",
+          "sha256": "f29aa9712eda525569fa5c264f949f329c6c5683ed7b2057d324c533f2858939",
+          "b2_key": "comfyui/assets/f2/9a/f29aa9712eda525569fa5c264f949f329c6c5683ed7b2057d324c533f2858939.mp4",
+          "size": 362080,
           "dims": [
             832,
             832
           ]
         },
         {
-          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/1e/3d/1e3d0610ebae7e929a68e047866505a3b06dd055e1f15a7b1f905b8bea636f8f.mp4",
-          "sha256": "1e3d0610ebae7e929a68e047866505a3b06dd055e1f15a7b1f905b8bea636f8f",
-          "b2_key": "comfyui/assets/1e/3d/1e3d0610ebae7e929a68e047866505a3b06dd055e1f15a7b1f905b8bea636f8f.mp4",
-          "size": 541276,
+          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/ff/2b/ff2bc128f0a1afc9b4839969a96cc93ea6ba36f810aee7564e918bd6ba3d8f81.mp4",
+          "sha256": "ff2bc128f0a1afc9b4839969a96cc93ea6ba36f810aee7564e918bd6ba3d8f81",
+          "b2_key": "comfyui/assets/ff/2b/ff2bc128f0a1afc9b4839969a96cc93ea6ba36f810aee7564e918bd6ba3d8f81.mp4",
+          "size": 497688,
           "dims": [
             832,
             480
           ]
         },
         {
-          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/eb/bc/ebbc766985b628b20514218862c561b9a931d6f977ff115f516db5d800058d79.mp4",
-          "sha256": "ebbc766985b628b20514218862c561b9a931d6f977ff115f516db5d800058d79",
-          "b2_key": "comfyui/assets/eb/bc/ebbc766985b628b20514218862c561b9a931d6f977ff115f516db5d800058d79.mp4",
-          "size": 484128,
+          "url": "https://s3.us-east-005.backblazeb2.com/Filmwriter/comfyui/assets/1e/78/1e784b376a9a58e5376a86f3f70a5a2418114963cf6464629fbd24b2acf62696.mp4",
+          "sha256": "1e784b376a9a58e5376a86f3f70a5a2418114963cf6464629fbd24b2acf62696",
+          "b2_key": "comfyui/assets/1e/78/1e784b376a9a58e5376a86f3f70a5a2418114963cf6464629fbd24b2acf62696.mp4",
+          "size": 358691,
           "dims": [
             832,
             480
@@ -98,5 +98,5 @@
       ]
     }
   ],
-  "seconds_elapsed": 1180.8
+  "seconds_elapsed": 1075.8
 }

@@ -285,6 +285,78 @@ def api_community():
         return {"shots": []}
 
 
+def _canon_s3():
+    import boto3
+    region = os.environ.get("B2_REGION", "us-east-005")
+    return boto3.client("s3", endpoint_url=f"https://s3.{region}.backblazeb2.com",
+                        aws_access_key_id=os.environ["B2_KEY_ID"],
+                        aws_secret_access_key=os.environ["B2_APP_KEY"], region_name=region)
+
+
+_SEALED_BUCKET = os.environ.get("B2_SEALED_BUCKET", "filmwriter-sealed")
+
+
+@app.get("/api/canon/status")
+def canon_status(show: str = "warlords-sniper"):
+    from botocore.exceptions import ClientError
+    key = f"vault/{show}/season.canon.json"
+    s3 = _canon_s3()
+    try:
+        vs = s3.list_object_versions(Bucket=_SEALED_BUCKET, Prefix=key).get("Versions", [])
+        v = next((x for x in vs if x["IsLatest"]), None)
+        if not v:
+            return {"locked": False, "error": "no canon copy found"}
+        ret = s3.get_object_retention(Bucket=_SEALED_BUCKET, Key=key,
+                                      VersionId=v["VersionId"])["Retention"]
+        return {"locked": True, "key": key, "version": v["VersionId"],
+                "mode": ret["Mode"], "retain_until": str(ret["RetainUntilDate"])[:19]}
+    except ClientError as e:
+        return {"locked": False, "error": e.response["Error"].get("Code", "unknown")}
+
+
+@app.post("/api/canon/attack")
+def canon_attack(show: str = "warlords-sniper"):
+    """The stunt: really try to delete the Object-Locked canon (no bypass). B2 refuses."""
+    from botocore.exceptions import ClientError
+    key = f"vault/{show}/season.canon.json"
+    s3 = _canon_s3()
+    vs = s3.list_object_versions(Bucket=_SEALED_BUCKET, Prefix=key).get("Versions", [])
+    v = next((x for x in vs if x["IsLatest"]), None)
+    if not v:
+        raise HTTPException(status_code=404, detail="no canon copy to attack")
+    # Safety: only attempt the delete if retention is verifiably in force.
+    try:
+        ret = s3.get_object_retention(Bucket=_SEALED_BUCKET, Key=key,
+                                      VersionId=v["VersionId"])["Retention"]
+    except ClientError:
+        raise HTTPException(status_code=409, detail="canon retention not verifiable; not attacking")
+    try:
+        s3.delete_object(Bucket=_SEALED_BUCKET, Key=key, VersionId=v["VersionId"])
+        return {"deleted": True, "warning": "LOCK NOT ENFORCED — investigate immediately"}
+    except ClientError as e:
+        err = e.response["Error"]
+        return {"deleted": False, "refused": True,
+                "code": err.get("Code"), "message": err.get("Message", "")[:200],
+                "version": v["VersionId"], "mode": ret["Mode"],
+                "retain_until": str(ret["RetainUntilDate"])[:19]}
+
+
+@app.get("/api/metrics")
+def api_metrics():
+    """Network vitals for the credibility strip."""
+    import json
+    eps = [k for k in _b2_list("episodes/") if k.endswith(".mp4") and "/canon/" not in k]
+    posters = [k for k in _b2_list("posters/") if k.endswith(".png")]
+    try:
+        shots = len(json.loads(_b2b().get(_COMMUNITY_KEY).decode()).get("shots", []))
+    except Exception:
+        shots = 0
+    return {"episodes_aired": len(eps), "posters": len(posters), "visitor_shots": shots,
+            "uptime_s": round(time.time() - _APP_STARTED),
+            "cloud_cost_estimate_usd": round(len(eps) * 6.0, 2),
+            "local_cost_usd": round(len(eps) * 0.12, 2)}
+
+
 @app.get("/media/{key:path}")
 def media(key: str, request: Request):
     """Range-aware proxy so the browser can stream objects from the (private) B2 bucket."""
@@ -568,7 +640,11 @@ def _run_episode(jid: str, show: str, character: str, premise: str, n_scenes: in
     music_path = None
     try:
         import produce_episode
-        produce_episode.set_progress(lambda m: job["log"].append(m))
+
+        def _prog(m):
+            job["log"].append(m)
+            job["stage"] = str(m)[:100]
+        produce_episode.set_progress(_prog)
         # Score first: an instrumental bed from ACE-Step, on the same GPU.
         try:
             import music

@@ -236,6 +236,7 @@
 
 <section id="floor"><div class="wrap">
   <div class="head"><h2>Studio Floor</h2><span class="sub">live &mdash; what the network's GPU is doing right now</span></div>
+  <div id="vitals" style="display:flex;gap:12px;flex-wrap:wrap;margin:4px 0 18px"></div>
   <div id="floorRoot"><div class="empty">Checking the floor&hellip;</div></div>
 </div></section>
 
@@ -244,6 +245,18 @@
   <p class="note">Every identity anchor lives on <b style="color:#fff">Backblaze&nbsp;B2</b>, deduplicated by SHA-256 and
     versioned by a <span class="mono">season.json</span> bible. This is the network's institutional memory.</p>
   <div id="vaultRoot"><div class="empty">Loading the vault from B2&hellip;</div></div>
+
+  <div style="margin-top:28px;background:var(--panel);border:1px solid rgba(255,90,120,.4);border-radius:18px;padding:24px 26px">
+    <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
+      <span style="font-family:'Bebas Neue';font-size:34px">The Canon Is Immutable</span>
+      <span id="canonMeta" class="mono" style="font-size:12px;color:var(--dim)"></span>
+    </div>
+    <p class="note" style="margin:10px 0 16px">The blessed cast bible is stored under <b style="color:#fff">B2 Object Lock
+      (GOVERNANCE)</b>. Continuity can't be silently rewritten — not even by us. Don't take our word for it:
+      this button sends a <span class="mono">DeleteObjectVersion</span> to Backblaze <i>right now</i>, live.</p>
+    <button class="btn" id="canonBtn" style="background:linear-gradient(180deg,#ff8a9d,#e4002b);color:#fff">Try to delete the cast bible</button>
+    <div class="prog" id="canonOut" style="margin-top:14px"></div>
+  </div>
 </div></section>
 
 <footer><div class="wrap"><div class="foot">
@@ -515,6 +528,45 @@ async function loadCommunity(){
   }catch(e){}
 }
 loadCommunity();
+
+/* ── Canon attack + network vitals ── */
+async function loadCanon(){
+  try{
+    const c=await (await fetch('/api/canon/status')).json();
+    document.getElementById('canonMeta').textContent=c.locked
+      ?`version ${String(c.version).slice(0,14)}… · ${c.mode} until ${c.retain_until}Z`
+      :'(canon status unavailable)';
+    if(!c.locked)document.getElementById('canonBtn').disabled=true;
+  }catch(e){}
+}
+document.getElementById('canonBtn').addEventListener('click',async()=>{
+  const out=document.getElementById('canonOut'),btn=document.getElementById('canonBtn');
+  btn.disabled=true;out.style.display='block';
+  out.innerHTML='<span class="on">▸ DELETE s3://'+'…/season.canon.json (versioned, no bypass) — sending to Backblaze…</span>';
+  try{
+    const r=await (await fetch('/api/canon/attack',{method:'POST'})).json();
+    if(r.refused){
+      out.innerHTML='<span class="er">✕ '+r.code+'</span> — Backblaze refused the delete.\n'
+        +'<span class="ok">✓</span> canon version '+String(r.version).slice(0,14)+'… survives ('+r.mode+' until '+r.retain_until+'Z)\n'
+        +'<span class="ok">✓</span> '+String(r.message||'').replace(/</g,'&lt;');
+    }else{
+      out.innerHTML='<span class="er">'+JSON.stringify(r)+'</span>';
+    }
+  }catch(e){out.innerHTML='<span class="er">request failed: '+e.message+'</span>';}
+  setTimeout(()=>{btn.disabled=false;},4000);
+});
+async function loadVitals(){
+  try{
+    const m=await (await fetch('/api/metrics')).json();
+    const up=m.uptime_s,d=Math.floor(up/86400),h=Math.floor(up%86400/3600),mi=Math.floor(up%3600/60);
+    const chip=(t)=>`<span class="tag" style="font-family:'IBM Plex Mono';font-size:12px">${t}</span>`;
+    document.getElementById('vitals').innerHTML=
+      chip(`${m.episodes_aired} episodes aired`)+chip(`${m.visitor_shots} visitor shots`)
+      +chip(`on air ${d}d ${h}h ${mi}m`)
+      +chip(`cloud equivalent ~$${m.cloud_cost_estimate_usd} · this network ~$${m.local_cost_usd} electricity`);
+  }catch(e){}
+}
+loadCanon();loadVitals();setInterval(loadVitals,30000);
 
 loadVault();loadEpisodes();
 </script>

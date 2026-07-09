@@ -4,13 +4,11 @@
 - [x] **Public repo** — https://github.com/banksythequantLab/encore (secrets excluded, README + .env.example + workflows/)
 - [x] **Write-up** — paste `DEVPOST_SUBMISSION.md` into the Devpost form (tagline + body are form-ready)
 - [x] **Live URL** — https://encore.tlz.us
-- [ ] **~3-min demo video** — THE remaining gap. Script (from reviewer, endorsed):
-      1. 0:00–0:25 hook: clips are disposable; real stories need the cast to come back (show regen = stranger)
-      2. 0:25–1:10 the vault: anchor on B2 → same face, new scene
-      3. 1:10–2:10 the judge loop live: low score → retake → 0.95 (studio floor footage)
-      4. 2:10–2:40 public maker + community strip + ON AIR premiere + countdown
-      5. 2:40–3:00 the stunt: click "Try to delete the cast bible" → AccessDenied, live. Close: "seasons, not clips."
-- [ ] **Submit the Devpost form** (Derek — needs your account)
+- [x] **Demo video** — FINAL (v9, 55s): sponsor badge every frame, thesis-centered narration.
+      - File: `demo/encore_demo_v5.mp4` (final build) — also delivered as encore_demo_v9.mp4
+      - Public stream: https://encore.tlz.us/media/posters/demo/encore-demo-final.mp4
+      - Devpost wants YouTube/Vimeo: upload the mp4 to YouTube (unlisted is fine) and paste that link
+- [ ] **Submit the Devpost form** (Derek — needs your account; paste from DEVPOST_SUBMISSION.md)
 
 ## Pre-submission verification (run the morning of)
 - [ ] Health: 8090/8188/11434/8300 + /health + public /api/studio

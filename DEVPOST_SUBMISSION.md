@@ -6,8 +6,7 @@ is judged against canon, and full episodes are produced **end-to-end** — each 
 story the network remembers from B2. Continuity as infrastructure, not a prompt trick. And the
 whole studio runs on **one home GPU**.
 
-**Live:** https://encore.tlz.us — the library, the cast, the studio floor, and the maker are all
-real and public. Anything you generate renders on the actual GPU and lands in the actual library.
+**Live:** https://encore.tlz.us — the library, the cast, and the studio floor are real and public.
 
 **Code:** https://github.com/banksythequantLab/encore
 
@@ -41,10 +40,10 @@ let a local vision judge **grade every take against the anchor** until the right
   generated on the same GPU, ducked under the VO** → title/end cards → composed MP4 → B2 library.
 - **Generated key art.** Every episode gets a 2:3 poster (z-image-turbo) — generated on the same
   GPU, stored on B2, rendered as the network's poster rails.
-- **The maker is open to the public.** Anyone on the internet can cast a vault character into a
-  new scene or commission a whole episode. Jobs run through a strict FIFO GPU queue; the **Studio
-  Floor** shows the GPU, the queue, and identity scores live. Visitor shots join the public
-  **"Made On This Network"** strip — a growing community gallery on B2.
+- **A studio maker.** New shots cast a vault character into a new scene; whole episodes are
+  commissioned through the same pipeline. Jobs run through a strict FIFO GPU queue; the **Studio
+  Floor** shows the GPU, the queue, and identity scores live. Shots join the
+  **"Made On This Network"** strip — a growing gallery on B2.
 
 ## How it uses Genblaze (meaningfully)
 

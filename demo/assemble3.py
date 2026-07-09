@@ -39,11 +39,11 @@ def cap(line):
 
 # ── narration timeline (VO drives everything) ──
 GAP = 0.55           # breath between lines
-CARD_OPEN = 4.2      # cinematic cold open (footage + title overlay)
+CARD_OPEN = 6.5      # cinematic cold open (footage + title overlay, long enough to read)
 END_LEN = 5.5        # footage outro with URLs
 vo = [f"n{i}.wav" for i in range(1, 7)]
 d = [dur(w) for w in vo]
-starts = [1.3]       # n1 speaks over the cold open
+starts = [2.8]       # n1 speaks over the cold open after the title lands
 for i in range(1, 6):
     starts.append(starts[i - 1] + d[i - 1] + GAP)
 end_of_speech = starts[5] + d[5]
@@ -57,8 +57,8 @@ beats = [  # (source, ss, caption)
     ("cap2_theater.mp4", 2.5, "encore.tlz.us - a live AI streaming network"),
     ("cap3_sections.mp4", 5.5, "identity anchors on Backblaze B2 - every take judged"),
     ("cap1_hero.mp4", 0.5, "serialized episodes - the story continues from B2"),
-    ("submersion-ca5f894e.mp4", 12.0, "one home GPU - zero cloud costs"),
-    ("cap3_sections.mp4", 12.0, "make your own shot right now - it's live"),
+    ("submersion-ca5f894e.mp4", 12.0, "episodes, posters, scores - all stored and streamed from B2"),
+    ("cap2_theater.mp4", 11.0, "the library: every episode this network has ever aired"),
 ]
 files = []
 for i, (src, ss, text) in enumerate(beats):

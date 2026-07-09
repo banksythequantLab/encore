@@ -18,9 +18,9 @@ BEATS = {
           "Wrong face? Reshoot.",
     "n4": "Full episodes, end to end. The planner reads the story so far from B2, "
           "and writes the next chapter.",
-    "n5": "Episodes, music, posters, narration — all of it generated on one home GPU. "
-          "Total cloud spend: zero.",
-    "n6": "The maker is open. Come make a shot. Seasons, not clips. Encore.",
+    "n5": "Episodes, music, posters, narration — the studio builds all of it, "
+          "and Backblaze B2 keeps all of it.",
+    "n6": "Seasons. Not clips. This is Encore.",
 }
 
 D = os.path.dirname(os.path.abspath(__file__))

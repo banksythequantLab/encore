@@ -57,9 +57,11 @@ The lead character stays visually identical across every scene (same face/identi
 
 
 def plan_episode(show: str, character: str, premise: str, n_scenes: int = 3,
-                 style: str = "") -> EpisodeSpec:
+                 style: str = "", previously: str = "") -> EpisodeSpec:
+    prev_block = (f"THE STORY SO FAR (season memory, from B2):\n{previously}\n"
+                  f"This episode is the NEXT chapter — it must follow from those events.\n\n") if previously else ""
     user = (f"SHOW: {show}\nLEAD CHARACTER: {character}\nVISUAL STYLE: {style or 'cinematic, filmic'}\n"
-            f"PREMISE: {premise}\n\nWrite exactly {n_scenes} scenes. "
+            f"{prev_block}PREMISE: {premise}\n\nWrite exactly {n_scenes} scenes. "
             f"Each keyframe_prompt must keep {character} identical in face/identity while changing setting and action.")
     r = httpx.post(f"{OLLAMA}/api/chat", timeout=180, json={
         "model": PLAN_MODEL,

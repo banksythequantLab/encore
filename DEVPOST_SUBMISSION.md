@@ -1,8 +1,10 @@
-# Encore — a streaming network run by one GPU
+# Encore — the first AI network with a persistent cast and a living canon
 
-**Tagline:** Everyone else's AI video demo makes a clip. Encore runs a **network**: shows with a
-returning cast, episodes with scores and key-art posters, a public maker anyone can use — all
-produced by **one home GPU**, with **Backblaze B2** as the network's library and its memory.
+**Tagline:** Everyone else's AI video demo makes a disposable clip. Encore is a **network whose
+cast comes back**: identity anchors and the season's memory live on **Backblaze B2**, every take
+is judged against canon, and a new episode **airs itself nightly** — each one continuing the
+story the network remembers from B2. Continuity as infrastructure, not a prompt trick. And the
+whole studio runs on **one home GPU**.
 
 **Live:** https://encore.tlz.us — the library, the cast, the studio floor, and the maker are all
 real and public. Anything you generate renders on the actual GPU and lands in the actual library.
@@ -24,6 +26,10 @@ let a local vision judge **grade every take against the anchor** until the right
 
 ## What it does
 
+- **The network airs itself.** A nightly scheduler asks the planner for the *next chapter* —
+  written from the season memory on B2 — produces it unattended, and premieres it with a live
+  countdown and an "● ON AIR — now filming" hero while the GPU works. Episodes open with a
+  "Previously on Encore…" card recalled from B2.
 - **A real streaming site.** Tonight's featured episode, poster rails, a theater player, cast
   pages — every byte of media streamed from B2 through a range-aware proxy.
 - **Cast once, reuse forever.** Identity anchors live in the B2 Series Vault (SHA-256

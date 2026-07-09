@@ -192,8 +192,14 @@ def produce_episode(show: str, character: str, premise: str, n_scenes: int = 2,
         pass
 
     _log("== PLAN (local Ollama) ==")
+    import season
+    mem = season.load_memory(show)
+    prev = season.previously_text(mem, k=2)
+    prev_line = season.previously_line(mem)
+    if prev:
+        _log(f"  season memory: {len(mem['episodes'])} prior episode(s) recalled from B2")
     _free_gpu()
-    spec = plan_episode(show, character, premise, n_scenes, style)
+    spec = plan_episode(show, character, premise, n_scenes, style, previously=prev)
     _log("  title:", spec.episode_title)
     for s in spec.scenes:
         _log(f"  scene {s.scene_id}: {s.location} | {s.caption}")
@@ -240,13 +246,19 @@ def produce_episode(show: str, character: str, premise: str, n_scenes: int = 2,
     _log("== COMPOSE (ffmpeg) ==")
     _free_gpu()
     ep_mp4 = os.path.join(out_dir, "episode.mp4")
-    composer.compose_episode(spec, scenes_out, ep_mp4, music_path=music_path)
+    composer.compose_episode(spec, scenes_out, ep_mp4, music_path=music_path,
+                             previously=prev_line or None)
     dur = composer._dur(ep_mp4)
     _log(f"  composed {ep_mp4} dur={dur:.1f}s size={os.path.getsize(ep_mp4)}")
 
     _log("== STORE -> Backblaze B2 (episode library) ==")
     stored = composer.store_episode_to_b2(spec, ep_mp4)
     _log("  B2", stored["b2_key"], "size", stored["size"])
+    try:
+        season.record_episode(show, spec, stored)
+        _log("  season memory updated on B2 (episode", len(mem["episodes"]) + 1, ")")
+    except Exception as se:  # noqa: BLE001
+        _log("  season memory write warn:", se)
 
     summary = {
         "show": show, "character": character, "episode_title": spec.episode_title,

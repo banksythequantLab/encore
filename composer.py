@@ -144,10 +144,19 @@ def _scene_segment(clip, vo, overlay_png, out):
 
 
 def compose_episode(spec, scenes: List[dict], out_path: str,
-                    music_path: Optional[str] = None) -> str:
+                    music_path: Optional[str] = None,
+                    previously: Optional[str] = None) -> str:
     """spec: EpisodeSpec; scenes: [{clip, vo, scene_no, location, caption}] -> out_path mp4."""
     tmp = tempfile.mkdtemp(prefix="episode_")
     segs = []
+
+    if previously:
+        prev_png = _title_card("PREVIOUSLY", "on Encore", previously[:70],
+                               tick_l=f"{spec.show} // season memory",
+                               tick_r="recalled from Backblaze B2")
+        p0 = os.path.join(tmp, "s00_prev.mp4")
+        _still_segment(prev_png, 2.6, p0)
+        segs.append(p0)
 
     title_png = _title_card(spec.show, spec.episode_title, spec.logline[:70],
                             tick_l=f"{spec.show} // S01",

@@ -440,12 +440,33 @@ def _run_shot(jid: str, show: str, character: str, scene: str, animate: bool):
         job["log"].append("Error: " + str(e))
 
 
+_RATE: dict = {}  # ip -> list[timestamps]
+
+
+def _rate_check(request: Request, kind: str):
+    """Per-IP caps: shots 4/hour, episodes 1/6 hours. Local box is uncapped."""
+    ip = request.headers.get("cf-connecting-ip") or (request.client.host if request.client else "?")
+    if ip in ("127.0.0.1", "::1"):
+        return
+    window, limit = ((3600, 4) if kind == "shot" else (21600, 1))
+    now = time.time()
+    hist = [t for t in _RATE.get((ip, kind), []) if now - t < window]
+    if len(hist) >= limit:
+        raise HTTPException(status_code=429, detail=(
+            "The one GPU is popular today — you've hit the per-visitor limit for "
+            f"{kind}s ({limit} per {window // 3600}h). Come back soon, or clone the repo "
+            "and run Encore on your own card."))
+    hist.append(now)
+    _RATE[(ip, kind)] = hist
+
+
 @app.post("/make/shot")
 def make_shot(req: ShotReq, request: Request):
     # Public generation is OPEN (judging window). Set PUBLIC_DEMO_FORCE=1 to re-lock
     # generation to the local box only.
     if os.environ.get("PUBLIC_DEMO_FORCE"):
         raise HTTPException(status_code=403, detail="Generation runs on the local studio box only.")
+    _rate_check(request, "shot")
     jid = _uuid.uuid4().hex[:12]
     _JOBS[jid] = {"status": "queued", "stage": "queued", "log": [], "result": None,
                   "error": None, "created": time.time()}
@@ -456,6 +477,9 @@ def make_shot(req: ShotReq, request: Request):
 @app.get("/make/jobs/{jid}")
 def make_job(jid: str):
     return _JOBS.get(jid, {"status": "unknown"})
+
+
+_APP_STARTED = time.time()
 
 
 @app.get("/api/studio")
@@ -472,8 +496,10 @@ def studio_state():
                      "created": j.get("created"),
                      "score": max(scores) if scores else None})
     busy = any(x["status"] == "running" for x in jobs)
+    on_air = next((x for x in jobs if x["status"] == "running" and x["kind"] == "episode"), None)
     return {"queue_depth": _QUEUE.qsize(), "gpu": "busy" if busy else "idle",
-            "jobs": jobs}
+            "jobs": jobs, "on_air": on_air,
+            "next_air": _next_air_ts(), "started": _APP_STARTED}
 
 
 class EpisodeReq(BaseModel):
@@ -481,6 +507,60 @@ class EpisodeReq(BaseModel):
     character: str
     premise: str
     n_scenes: int = 2
+
+
+# ---------------------------------------------------------------------------
+# The network airs itself: one new episode per night, premise written by the
+# planner from the season memory on B2. ON AIR state + countdown feed the hero.
+# ---------------------------------------------------------------------------
+import datetime as _dt  # noqa: E402
+
+AIR_SHOW = os.environ.get("AIR_SHOW", "warlords-sniper")
+AIR_CHARACTER = os.environ.get("AIR_CHARACTER", "Lena")
+AIR_HOUR = int(os.environ.get("AIR_HOUR", "21"))  # local time, minute 0
+
+
+def _next_air_ts() -> float:
+    now = _dt.datetime.now()
+    target = now.replace(hour=AIR_HOUR, minute=0, second=0, microsecond=0)
+    if target <= now:
+        target += _dt.timedelta(days=1)
+    return target.timestamp()
+
+
+def _air_once() -> str:
+    """Queue tonight's episode: next-chapter premise from the B2 season memory."""
+    import season
+    premise = season.next_premise(AIR_SHOW, AIR_CHARACTER)
+    jid = _uuid.uuid4().hex[:12]
+    _JOBS[jid] = {"status": "queued", "stage": "queued", "log": [f"Nightly premiere — premise: {premise}"],
+                  "result": None, "error": None, "created": time.time(),
+                  "kind": "episode", "nightly": True}
+    _enqueue(jid, _run_episode, (AIR_SHOW, AIR_CHARACTER, premise, 2))
+    return jid
+
+
+def _air_scheduler():
+    while True:
+        wait = max(5.0, _next_air_ts() - time.time())
+        time.sleep(wait)
+        try:
+            _air_once()
+        except Exception:
+            pass
+        time.sleep(120)  # never double-fire within the same minute
+
+
+if os.environ.get("AIR_ENABLED", "1") == "1":
+    threading.Thread(target=_air_scheduler, daemon=True).start()
+
+
+@app.post("/air/now")
+def air_now(request: Request):
+    """Manual premiere trigger — local box only."""
+    if request.client.host not in ("127.0.0.1", "::1"):
+        raise HTTPException(status_code=403, detail="local only")
+    return {"job_id": _air_once()}
 
 
 def _run_episode(jid: str, show: str, character: str, premise: str, n_scenes: int):
@@ -544,6 +624,7 @@ def make_episode(req: EpisodeReq, request: Request):
     # Public generation is OPEN (judging window). PUBLIC_DEMO_FORCE=1 re-locks.
     if os.environ.get("PUBLIC_DEMO_FORCE"):
         raise HTTPException(status_code=403, detail="Generation runs on the local studio box only.")
+    _rate_check(request, "episode")
     n = max(1, min(4, req.n_scenes))
     jid = _uuid.uuid4().hex[:12]
     _JOBS[jid] = {"status": "queued", "stage": "queued", "log": [], "result": None,

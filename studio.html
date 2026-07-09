@@ -170,15 +170,16 @@
 <header class="hero" id="tonight">
   <div class="heroBg" id="heroBg"></div>
   <div class="heroIn"><div class="wrap">
-    <div class="kick">tonight on encore &middot; a streaming network run by one gpu</div>
+    <div class="kick" id="heroKick">tonight on encore &middot; a persistent cast &middot; a living canon on b2</div>
     <h1 class="title" id="heroTitle">Seasons,<br><span class="g">not clips.</span></h1>
-    <p class="lead">Every show on this network is planned, shot, judged and streamed by a single local GPU —
-      with <b style="color:#fff">Backblaze&nbsp;B2</b> as the studio's library and its memory.
-      The same cast returns, episode after episode.</p>
+    <p class="lead">The first AI network where the cast <i>comes back</i>. Identity anchors and the season's
+      memory live on <b style="color:#fff">Backblaze&nbsp;B2</b>; every take is judged against canon —
+      continuity as infrastructure, not a prompt trick. And the whole studio runs on one home GPU.</p>
     <div class="heroBadges">
       <button class="playbtn" id="heroPlay" style="display:none"><span class="tri">&#9654;</span><span id="heroPlayLabel">Play</span></button>
       <span class="b2pill"><span class="b2" id="herob2"></span><span class="l">the network's memory</span></span>
       <span class="tag ok">100% local &middot; $0 cloud credits</span>
+      <span class="tag" id="airChip" style="display:none;font-family:'IBM Plex Mono'"></span>
     </div>
     <div class="heroMeta" id="heroMeta"></div>
   </div></div>
@@ -417,6 +418,9 @@ async function generate(){
     if(r.status===403){ mkProg.style.display='none'; mkHint.style.display='block';
       mkHint.innerHTML='⚡ Generation runs on the studio\'s local GPUs. This is the public demo — clone the repo and run Encore locally. (The Library and Cast are live.)';
       mkGo.disabled=false; return; }
+    if(r.status===429){ const d=await r.json().catch(()=>({})); mkProg.style.display='none';
+      mkHint.style.display='block'; mkHint.innerHTML='⏳ '+((d.detail)||'Rate limit reached — the one GPU is busy. Try again later.');
+      mkGo.disabled=false; return; }
     if(!r.ok) throw new Error('http '+r.status);
     jid=(await r.json()).job_id;
   }catch(e){ mkProg.innerHTML='<span class="er">Could not reach the maker ('+e.message+').</span>'; mkGo.disabled=false; return; }
@@ -464,9 +468,32 @@ async function loadFloor(){
         <span style="color:#5f6f8f;font-size:11.5px;flex:none">${x.status}</span></div>`;
     }).join('');
     root.innerHTML=head+(rows||'<div class="empty">Nothing on the floor — make a shot above.</div>');
+    updateAir(j);
   }catch(e){}
 }
 loadFloor();setInterval(loadFloor,3000);
+
+/* ── ON AIR / countdown ── */
+let NEXT_AIR=null;
+function updateAir(j){
+  const kick=document.getElementById('heroKick');
+  NEXT_AIR=j.next_air||null;
+  if(j.on_air){
+    kick.innerHTML='<span style="color:#ff5a6e">&#9679; ON AIR</span> — now filming tonight\'s episode &middot; '+
+      String(j.on_air.stage||'').replace(/</g,'&lt;').slice(0,80);
+    document.getElementById('airChip').style.display='none';
+  }else{
+    kick.innerHTML='tonight on encore &middot; a persistent cast &middot; a living canon on b2';
+  }
+}
+setInterval(()=>{
+  const chip=document.getElementById('airChip');
+  if(!NEXT_AIR){chip.style.display='none';return;}
+  const s=Math.max(0,Math.floor(NEXT_AIR-Date.now()/1000));
+  const h=Math.floor(s/3600),m=Math.floor(s%3600/60),ss=s%60;
+  chip.textContent=`next episode premieres in ${h}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+  chip.style.display='';
+},1000);
 
 /* ── Community strip ── */
 let COMM=[];

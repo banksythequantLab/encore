@@ -249,7 +249,7 @@ def api_episodes():
     # Upload times via S3 listing so the library sorts newest-first.
     times = {}
     try:
-        s3 = _canon_s3()
+        s3 = _b2_s3()
         pg = s3.get_paginator("list_objects_v2")
         for page in pg.paginate(Bucket=os.environ["B2_BUCKET"], Prefix="episodes/"):
             for o in page.get("Contents", []):
@@ -297,7 +297,8 @@ def api_community():
         return {"shots": []}
 
 
-def _canon_s3():
+def _b2_s3():
+    """boto3 client for the main bucket (used for LastModified listings)."""
     import boto3
     region = os.environ.get("B2_REGION", "us-east-005")
     return boto3.client("s3", endpoint_url=f"https://s3.{region}.backblazeb2.com",
@@ -305,59 +306,11 @@ def _canon_s3():
                         aws_secret_access_key=os.environ["B2_APP_KEY"], region_name=region)
 
 
-_SEALED_BUCKET = os.environ.get("B2_SEALED_BUCKET", "filmwriter-sealed")
-
-
-@app.get("/api/canon/status")
-def canon_status(show: str = "warlords-sniper"):
-    from botocore.exceptions import ClientError
-    key = f"vault/{show}/season.canon.json"
-    s3 = _canon_s3()
-    try:
-        vs = s3.list_object_versions(Bucket=_SEALED_BUCKET, Prefix=key).get("Versions", [])
-        v = next((x for x in vs if x["IsLatest"]), None)
-        if not v:
-            return {"locked": False, "error": "no canon copy found"}
-        ret = s3.get_object_retention(Bucket=_SEALED_BUCKET, Key=key,
-                                      VersionId=v["VersionId"])["Retention"]
-        return {"locked": True, "key": key, "version": v["VersionId"],
-                "mode": ret["Mode"], "retain_until": str(ret["RetainUntilDate"])[:19]}
-    except ClientError as e:
-        return {"locked": False, "error": e.response["Error"].get("Code", "unknown")}
-
-
-@app.post("/api/canon/attack")
-def canon_attack(show: str = "warlords-sniper"):
-    """The stunt: really try to delete the Object-Locked canon (no bypass). B2 refuses."""
-    from botocore.exceptions import ClientError
-    key = f"vault/{show}/season.canon.json"
-    s3 = _canon_s3()
-    vs = s3.list_object_versions(Bucket=_SEALED_BUCKET, Prefix=key).get("Versions", [])
-    v = next((x for x in vs if x["IsLatest"]), None)
-    if not v:
-        raise HTTPException(status_code=404, detail="no canon copy to attack")
-    # Safety: only attempt the delete if retention is verifiably in force.
-    try:
-        ret = s3.get_object_retention(Bucket=_SEALED_BUCKET, Key=key,
-                                      VersionId=v["VersionId"])["Retention"]
-    except ClientError:
-        raise HTTPException(status_code=409, detail="canon retention not verifiable; not attacking")
-    try:
-        s3.delete_object(Bucket=_SEALED_BUCKET, Key=key, VersionId=v["VersionId"])
-        return {"deleted": True, "warning": "LOCK NOT ENFORCED — investigate immediately"}
-    except ClientError as e:
-        err = e.response["Error"]
-        return {"deleted": False, "refused": True,
-                "code": err.get("Code"), "message": err.get("Message", "")[:200],
-                "version": v["VersionId"], "mode": ret["Mode"],
-                "retain_until": str(ret["RetainUntilDate"])[:19]}
-
-
 @app.get("/api/provenance/recent")
 def provenance_recent(n: int = 10):
     """The ledger: most recent Genblaze run manifests from B2, with retake lineage."""
     import json
-    s3 = _canon_s3()
+    s3 = _b2_s3()
     bucket = os.environ["B2_BUCKET"]
     objs = []
     pg = s3.get_paginator("list_objects_v2")

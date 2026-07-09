@@ -64,8 +64,8 @@ let a local vision judge **grade every take against the anchor** until the right
   `season.json` bible. B2 is the studio's long-term memory — it's *why* the cast can return.
 - **The library IS B2:** episodes, posters, visitor shots, music and manifests all live on B2 and
   stream to the public site through a range-aware `/media/` proxy. Nothing is served from disk.
-- **Object-Locked canon:** the blessed cast/bible is immutable under B2 Object Lock (GOVERNANCE);
-  versioned deletes are refused — continuity can't be silently rewritten.
+- **Versioned canon:** the blessed cast/bible is stored durably on B2 with versioning, so
+  continuity can't be silently rewritten.
 - **Community index:** the public gallery is a rolling JSON index on B2, appended by the GPU
   worker as visitors create shots.
 
@@ -93,7 +93,7 @@ Everything above is live and was verified on real public runs — nothing is moc
 - Public visitors have produced **complete episodes** through encore.tlz.us (e.g. *Flooded
   Pursuit*: 2 scenes, 24s, chained i2v, identity 0.95, built in ~12 min on the queue).
 - The vault round-trips a real banked cast (two shows, five characters); the judge scores
-  same-vs-different correctly (0.95 vs 0.0); Object Lock refuses deletion of sealed canon.
+  same-vs-different correctly (0.95 vs 0.0).
 - Posters were generated for the entire back-catalog on the same GPU; the music bed path is
   verified end-to-end (31.9s ACE-Step flac, ffprobe-checked, ducked by the composer).
 

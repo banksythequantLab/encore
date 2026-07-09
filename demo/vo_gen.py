@@ -10,8 +10,8 @@ load_dotenv(os.path.join(ROOT, ".env"))
 
 BEATS = {
     "b1_hook": ("Every AI video tool makes clips. Disposable. A stranger every time you press "
-                "generate. Real stories need something harder — the same character, back again. "
-                "This is Encore."),
+                "generate. Real stories need seasons, not clips — the same character, "
+                "back again. This is Encore."),
     "b2_vault": ("Every cast member lives in a vault on Backblaze B2. Content-addressed. "
                  "Versioned. The network's memory. That's why Lena can come back."),
     "b3_judge": ("Every take is judged against her anchor by a local vision model. Wrong face? "
@@ -19,8 +19,8 @@ BEATS = {
     "b4_network": ("Encore airs itself. Every night the planner reads the season so far from B2 "
                    "and writes the next chapter. Visitors make their own shots on the network's "
                    "single home GPU. Total cloud spend: zero."),
-    "b5_stunt": ("And the canon? Object-locked. Try to delete it — Backblaze refuses, live. "
-                 "Seasons, not clips. Encore."),
+    "b5_stunt": ("Every take is a sealed manifest on B2, lineage included. And it is all live, "
+                 "right now — the maker is open. Come make a shot. Seasons, not clips. Encore."),
 }
 
 import shutil  # noqa: E402

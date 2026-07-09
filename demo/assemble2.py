@@ -67,16 +67,16 @@ L = {  # segment video length = VO + breathing room
     "b": round(VO["b4_network.wav"] + 1.2, 1), "c": round(VO["b2_vault.wav"] + 1.0, 1),
     "d": round(VO["b3_judge.wav"] + 1.0, 1), "e": round(VO["b5_stunt.wav"] + 4.0, 1),
 }
-# A2 is a split screen: the SAME face in two different episodes, side by side.
-a2cap = cap("SAME CHARACTER. DIFFERENT EPISODE.",
-            "left: 'Submersion' - right: 'Flooded Pursuit' - one identity anchor on B2")
-run(["-ss", "4.5", "-t", str(L["a2"]), "-i", "submersion-ca5f894e.mp4",
-     "-ss", "4.0", "-t", str(L["a2"]), "-i", "flooded-pursuit-b29fa1f3.mp4",
+# A2: the identity anchor (character sheet in the B2 vault) beside a scene generated from it.
+a2cap = cap("ONE ANCHOR. EVERY SCENE.",
+            "left: Lena's identity anchor in the B2 vault - right: a new scene generated from it")
+run(["-loop", "1", "-t", str(L["a2"]), "-i", "anchor_lena.png",
+     "-loop", "1", "-t", str(L["a2"]), "-i", "shot_lena.png",
      "-filter_complex",
-     "[0:v]scale=960:540,fps=30[l];[1:v]scale=960:540,fps=30[r];"
-     "[l][r]hstack,pad=1920:1080:0:270,format=yuv420p," + a2cap + "[v]",
+     "[0:v]scale=-2:820[l];[1:v]scale=-2:820[r];[l][r]hstack,"
+     "scale=1920:-2,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,fps=30,format=yuv420p," + a2cap + "[v]",
      "-map", "[v]", "-an", "-c:v", "libx264", "-preset", "fast", "-crf", "19", "v_a2.mp4"])
-print("beat v_a2 (split screen)", flush=True)
+print("beat v_a2 (anchor vs scene)", flush=True)
 
 beats = [
     ("v_a1.mp4", ["-ss", "4.5", "-t", str(L["a1"]), "-i", "submersion-ca5f894e.mp4"],
@@ -87,8 +87,8 @@ beats = [
      "THE SERIES VAULT — BACKBLAZE B2", "identity anchors, SHA-256 content-addressed · why the cast returns"),
     ("v_d.mp4", ["-ss", "2.5", "-t", str(L["d"]), "-i", "cap2_theater.mp4"],
      "STREAMING FROM B2 — 'SIGNAL IN THE SHADOWS'", "written, shot, scored + postered by the network itself, today"),
-    ("v_e.mp4", ["-ss", "1", "-t", str(L["e"]), "-i", "cap4_canon.mp4"],
-     "LIVE OBJECT LOCK TEST — NO TRICKS", "real DeleteObjectVersion → AccessDenied · the canon survives"),
+    ("v_e.mp4", ["-ss", "13", "-t", str(L["e"]), "-i", "submersion-ca5f894e.mp4"],
+     "EVERY TAKE SEALED ON B2 — LINEAGE INCLUDED", "the maker is open at encore.tlz.us — come make a shot"),
 ]
 for out, inargs, t, s in beats:
     run(inargs + ["-vf", V + "," + cap(t, s), "-an",

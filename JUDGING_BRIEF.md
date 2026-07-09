@@ -56,3 +56,29 @@ story, and every episode — and every new take is judged against that memory.
 ## Your task
 Score each criterion 1-10 with justification, list the top 3 strengths and top 3 risks a
 real judge would flag, and name the highest-impact improvements achievable before Aug 3.
+
+
+## Appendix for reviewers proposing improvements (implementation map)
+
+- `comfyui_provider.py` — Genblaze BaseProvider; model→workflow-template JSON in `workflows/`;
+  uploads outputs to B2 `comfyui/assets/<sha>` itself (SDK sink has a Windows file:// bug, #132).
+- `pipeline.py` — gen_still runs the self-correction loop: generate → Qwen3-VL judge →
+  retake with feedback (max_iter, JUDGE_PASS_THRESHOLD=0.8); seals manifests to B2.
+  NOTE: the judge is orchestrated in app code, not as a Genblaze step — an integration gap.
+- `produce_episode.py` — plan (Ollama, reads season memory) → per-scene judged keyframe →
+  chained Wan i2v (49-frame segments, last-frame chaining) → VO (:8300 clone) → compose.
+  Identity drift enters mainly at i2v and at prompt variance between scenes.
+- `season.py` — season_memory.json on B2: previously_text feeds the planner; record_episode
+  writes back after airing.
+- `composer.py` — ffmpeg assembly: title/"Previously on"/end cards, VO, ducked music bed.
+- `posters.py`, `music.py` — z-image-turbo key art; ACE-Step beds via the same provider.
+- `app.py` — FastAPI: FIFO single-GPU queue, /media range proxy, /api/vault|episodes|studio|
+  community|metrics|provenance/recent, per-IP rate caps.
+- Known engineering debts: judge threshold 0.8 permits visible drift; wardrobe/hair not
+  pinned in prompts; Hero-AI show has anchors but zero episodes; judge scores not surfaced
+  per-episode in the UI; ledger rows don't deep-link to full manifest JSON; no failover if
+  the single box is down during judging.
+
+**Reviewer, please propose:** (a) the top 5 improvements ranked by judge impact vs effort
+before Aug 3; (b) any quick wins in the demo video; (c) anything that risks disqualification
+or credibility damage.

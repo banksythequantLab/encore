@@ -150,6 +150,28 @@
   .epresult .cap{font-family:'IBM Plex Mono';font-size:12px;color:var(--dim);padding:11px 14px;letter-spacing:.05em}
   .epresult video{width:100%;display:block;background:#000;aspect-ratio:16/9}
 
+  /* ── Season recap timeline ───────────────────────────────── */
+  .seasonStats{display:flex;gap:12px;flex-wrap:wrap;margin:4px 0 20px}
+  .timeline{display:flex;gap:18px;overflow-x:auto;padding:8px 2px 18px;scrollbar-width:thin}
+  .timeline::-webkit-scrollbar{height:8px}
+  .timeline::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+  .epnode{flex:0 0 190px;position:relative;padding-top:28px}
+  .epnode .link{position:absolute;top:12px;left:50%;width:calc(100% + 18px);height:2px;background:var(--line)}
+  .epnode .link.canon{background:var(--cyan);box-shadow:0 0 8px rgba(95,214,255,.55)}
+  .epnode .node{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;
+    background:#0a1120;border:2px solid var(--dim);z-index:1}
+  .epnode .node.canon{border-color:var(--cyan);background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+  .epnode .thumb{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;border-radius:12px;border:1px solid var(--line);
+    background:#0a1120;cursor:pointer;transition:.18s}
+  .epnode .thumb:hover{transform:translateY(-4px);border-color:rgba(95,214,255,.55)}
+  .epnode .en{font-family:'IBM Plex Mono';font-size:11px;color:var(--dim);letter-spacing:.08em;margin-top:9px}
+  .epnode .et{font-family:'Bebas Neue';font-size:22px;letter-spacing:.02em;line-height:1.05;margin-top:2px}
+  .epnode .ed{font-family:'IBM Plex Mono';font-size:11px;color:#5f6f8f;margin-top:3px}
+  .epnode .eb{display:inline-block;font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.08em;border-radius:999px;
+    padding:3px 9px;margin-top:7px;border:1px solid var(--line);color:var(--dim)}
+  .epnode .eb.canon{color:var(--cyan);border-color:rgba(95,214,255,.5);background:rgba(95,214,255,.08)}
+  .arcnote{font-family:'IBM Plex Mono';font-size:12.5px;color:var(--cyan);margin-top:6px;letter-spacing:.02em;line-height:1.6}
+
   footer{border-top:1px solid var(--line);padding:34px 0 60px;color:var(--dim);font-size:13px}
   .foot{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
   .empty{color:#5f6f8f;font-family:'IBM Plex Mono';font-size:13px;padding:20px 0}
@@ -189,6 +211,16 @@
   <p class="note">Posters are generated on the same GPU that shoots the episodes; both live on
     <b style="color:#fff">Backblaze&nbsp;B2</b>. Click any poster to watch in the theater.</p>
   <div id="libRoot"><div class="empty">Loading the library from B2&hellip;</div></div>
+</div></section>
+
+<section id="season"><div class="wrap">
+  <div class="head"><h2>Season So Far</h2><span class="sub">warlords sniper &mdash; the season in airing order &mdash; canon kept on Backblaze B2</span></div>
+  <p class="note">This is a serialized season, not a clip reel. The season memory lives on
+    <b style="color:#fff">Backblaze&nbsp;B2</b>, and each new episode is planned against what has already aired —
+    the newest three episodes form one continuing arc. Episodes that aired before the season memory went live
+    are marked <span class="mono">pre-canon</span>.</p>
+  <div id="seasonStats" class="seasonStats"></div>
+  <div id="seasonRoot"><div class="empty">Reading the season from B2&hellip;</div></div>
 </div></section>
 
 <section id="cast"><div class="wrap">
@@ -236,13 +268,16 @@
 <section id="floor"><div class="wrap">
   <div class="head"><h2>Studio Floor</h2><span class="sub">live &mdash; what the network's GPU is doing right now</span></div>
   <div id="vitals" style="display:flex;gap:12px;flex-wrap:wrap;margin:4px 0 18px"></div>
-  <div id="floorRoot"><div class="empty">Checking the floor&hellip;</div></div>
+  <div id="floorRoot"><div class="empty">Floor idle — jobs queue one at a time.</div></div>
 </div></section>
 
 <section id="vault"><div class="wrap">
   <div class="head"><h2>The Series Vault</h2><span class="sub">how the cast comes back &mdash; content-addressable anchors &middot; versioned show bible</span></div>
   <p class="note">Every identity anchor lives on <b style="color:#fff">Backblaze&nbsp;B2</b>, deduplicated by SHA-256 and
-    versioned by a <span class="mono">season.json</span> bible. This is the network's institutional memory.</p>
+    versioned by a <span class="mono">season.json</span> bible. This is the network's institutional memory.
+Why B2? The studio's memory can't live in a model (models forget) or on one machine (no durability story) —
+it needs storage that is durable, versioned, cheap enough to write on <i>every</i> generation, and fast enough
+to stream this site from. B2 is all four: the cast, the canon, and every sealed manifest survive the box.</p>
   <div id="vaultRoot"><div class="empty">Loading the vault from B2&hellip;</div></div>
 
   <div style="margin-top:28px">
@@ -473,9 +508,9 @@ async function loadFloor(){
         <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(x.stage||x.status||'').replace(/</g,'&lt;')}${badge}</span>
         <span style="color:#5f6f8f;font-size:11.5px;flex:none">${x.status}</span></div>`;
     }).join('');
-    root.innerHTML=head+(rows||'<div class="empty">Nothing on the floor — make a shot above.</div>');
+    root.innerHTML=head+(rows||'<div class="empty">Floor idle — ready for the next job. Make a shot above.</div>');
     updateAir(j);
-  }catch(e){}
+  }catch(e){ if(root.querySelector('.empty')) root.innerHTML='<div class="empty">Floor idle — jobs queue one at a time.</div>'; }
 }
 loadFloor();setInterval(loadFloor,3000);
 
@@ -547,6 +582,50 @@ async function loadLedger(){
   }catch(e){root.innerHTML='<div class="empty">Ledger unreachable.</div>';}
 }
 loadLedger();
+
+/* ── Season recap timeline ── */
+let SEASON=[];
+async function loadSeason(){
+  const root=document.getElementById('seasonRoot'),stats=document.getElementById('seasonStats');
+  try{
+    const j=await (await fetch('/api/episodes')).json();
+    const eps=(j.episodes||[]).filter(e=>e.show==='warlords-sniper');
+    if(!eps.length){root.innerHTML='<div class="empty">No episodes yet.</div>';return;}
+    const canon=new Set([...eps].sort((a,b)=>(b.aired||0)-(a.aired||0)).slice(0,3).map(e=>e.sha));
+    SEASON=[...eps].sort((a,b)=>(a.aired||0)-(b.aired||0));
+    root.innerHTML='<div class="timeline">'+SEASON.map((e,i)=>{
+      const inCanon=canon.has(e.sha);
+      const linkCanon=i<SEASON.length-1&&inCanon&&canon.has(SEASON[i+1].sha);
+      const d=new Date((e.aired||0)*1000);
+      const ds=d.toLocaleDateString(undefined,{month:'short',day:'numeric'})
+        +' · '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit',hour12:false});
+      const art=e.poster_url
+        ?`<img class="thumb" loading="lazy" src="${esc(e.poster_url)}" alt="${esc(e.title)}" onclick="openTheater(SEASON[${i}])"/>`
+        :`<video class="thumb" src="${esc(e.url)}#t=1" preload="metadata" muted playsinline onclick="openTheater(SEASON[${i}])"></video>`;
+      return `<div class="epnode">
+        ${i<SEASON.length-1?`<span class="link${linkCanon?' canon':''}"></span>`:''}
+        <span class="node${inCanon?' canon':''}"></span>
+        ${art}
+        <div class="en">EPISODE ${i+1}</div>
+        <div class="et">${esc(e.title)}</div>
+        <div class="ed">aired ${esc(ds)}</div>
+        <span class="eb${inCanon?' canon':''}">${inCanon?'canon · season memory':'pre-canon'}</span>
+      </div>`;
+    }).join('')+'</div>'
+    +`<div class="arcnote">${SEASON.filter(e=>canon.has(e.sha)).map(e=>esc(e.title)).join(' &rarr; ')}
+      &mdash; one continuing arc: each episode is planned against the season memory of the one before, sealed on B2.</div>`;
+    const chip=t=>`<span class="tag" style="font-family:'IBM Plex Mono';font-size:12px">${t}</span>`;
+    let chips=chip(`${eps.length} episodes aired`)+chip(`${canon.size}-episode serialized arc`);
+    try{
+      const p=await (await fetch('/api/provenance/recent?n=20')).json();
+      const runs=p.runs||[],retakes=runs.filter(r=>r.parent_run_id).length;
+      chips+=chip(`${runs.length} recent sealed manifests`)
+        +chip(`${retakes} retake${retakes===1?'':'s'} with parent lineage`);
+    }catch(e){}
+    stats.innerHTML=chips;
+  }catch(e){root.innerHTML='<div class="empty">Season unreachable.</div>';}
+}
+loadSeason();
 
 loadVault();loadEpisodes();
 </script>

@@ -76,6 +76,8 @@ live there. Delete the box, and the show survives.
   continuity can't be silently rewritten.
 - **Community index:** the public gallery is a rolling JSON index on B2, appended by the GPU
   worker as visitors create shots.
+- **Publicly auditable:** retake lineage and every raw sealed manifest are browsable by anyone
+  via The Ledger on the live site — each row deep-links to the manifest JSON stored on B2.
 
 ## Fully local stack
 
@@ -105,7 +107,8 @@ Everything above is live and was verified on real public runs — nothing is moc
 - **Self-correction is visible in the data:** the judge pass threshold is 0.9, the character's
   vault appearance is pinned into every keyframe prompt, and The Ledger on the live site shows a
   real rejected take with its score and the retake lineage that replaced it — deep-linked to the
-  raw Genblaze manifest on B2.
+  raw Genblaze manifest on B2; the rejected take (0.60) and its passing retake (0.85) are
+  displayed side-by-side on the site with links to both manifests.
 - Public visitors have produced **complete episodes** through encore.tlz.us (e.g. *Flooded
   Pursuit*: 2 scenes, 24s, chained i2v, identity 0.95, built in ~12 min on the queue).
 - The vault round-trips a real banked cast (two shows, five characters); the judge scores

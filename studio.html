@@ -172,6 +172,24 @@
   .epnode .eb.canon{color:var(--cyan);border-color:rgba(95,214,255,.5);background:rgba(95,214,255,.08)}
   .arcnote{font-family:'IBM Plex Mono';font-size:12.5px;color:var(--cyan);margin-top:6px;letter-spacing:.02em;line-height:1.6}
 
+  /* ── The Retake (rejected take vs passing retake) ────────── */
+  .retakeGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
+  @media(max-width:720px){.retakeGrid{grid-template-columns:1fr}}
+  .takecard{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .takecard img{width:100%;display:block;background:#0a1120}
+  .takecard .tb{padding:13px 15px 15px}
+  .takecard .tc{font-family:'IBM Plex Mono';font-size:13px;font-weight:600;letter-spacing:.05em}
+  .takecard .ts{font-size:12.5px;color:var(--dim);margin-top:5px;line-height:1.45}
+  .takecard .tm{font-family:'IBM Plex Mono';font-size:11.5px;color:var(--cyan);margin-top:8px;display:inline-block;letter-spacing:.05em}
+  .takecard .tm:hover{color:var(--cyan2)}
+
+  /* ── Verify-in-60s hero callout ──────────────────────────── */
+  .verify60{font-family:'IBM Plex Mono';margin-top:16px;max-width:660px;font-size:12px;line-height:1.7;color:var(--dim);
+    background:rgba(7,10,16,.55);border:1px solid var(--line);border-radius:10px;padding:10px 14px;letter-spacing:.02em}
+  .verify60 .v6l{color:var(--cyan);letter-spacing:.08em}
+  .verify60 a{color:var(--cyan);border-bottom:1px dotted rgba(95,214,255,.5);cursor:pointer}
+  .verify60 a:hover{color:var(--cyan2)}
+
   footer{border-top:1px solid var(--line);padding:34px 0 60px;color:var(--dim);font-size:13px}
   .foot{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
   .empty{color:#5f6f8f;font-family:'IBM Plex Mono';font-size:13px;padding:20px 0}
@@ -203,6 +221,11 @@
       <span class="tag ok">local-first generation &middot; provenance-sealed on B2</span>
     </div>
     <div class="heroMeta" id="heroMeta"></div>
+    <div class="verify60"><span class="v6l">VERIFY IN 60 SECONDS:</span>
+      <a onclick="var b=document.getElementById('heroPlay');if(b&&b.style.display!=='none')b.click();return false">play the newest episode</a>
+      (it opens on a &ldquo;Previously on&hellip;&rdquo; card recalled from B2) &rarr;
+      scroll to <a href="#ledger">The Ledger</a> &rarr;
+      click any manifest &#8599; to read the raw sealed record.</div>
   </div></div>
 </header>
 
@@ -281,6 +304,29 @@ to stream this site from. B2 is all four: the cast, the canon, and every sealed 
   <div id="vaultRoot"><div class="empty">Loading the vault from B2&hellip;</div></div>
 
   <div style="margin-top:28px">
+    <div class="head"><h2 style="font-size:38px">The Retake</h2>
+      <span class="sub">one real self-correction, from Signal In The Shadows &mdash; scored by the identity judge against Lena's vault anchor</span></div>
+    <div class="retakeGrid">
+      <div class="takecard">
+        <img loading="lazy" src="/media/comfyui/assets/54/d9/54d9050bcc607ea508b962523ed989111dc4c587eb470cc3362ebc7d2eeba59f.png" alt="Take 1 — rejected, identity 0.60"/>
+        <div class="tb">
+          <div class="tc" style="color:#ff5a5a">TAKE 1 &mdash; identity 0.60 &mdash; REJECTED</div>
+          <div class="ts">judge: wrong wardrobe (trench coat vs anchor's short jacket), wrong weapon</div>
+          <a class="tm" href="/media/comfyui/manifests/13809c4b-c6f7-497a-a91d-cd7630b7b6b9.json" target="_blank">manifest &#8599;</a>
+        </div>
+      </div>
+      <div class="takecard">
+        <img loading="lazy" src="/media/comfyui/assets/c8/fe/c8fee7e82ab4aa794bcc3a3b00533e987afe61beeb2049dbcc77b6031313dbfc.png" alt="Retake — passed, identity 0.85"/>
+        <div class="tb">
+          <div class="tc" style="color:#7dff9a">RETAKE &mdash; identity 0.85 &mdash; PASSED</div>
+          <div class="ts">same prompt, judge feedback fed back in</div>
+          <a class="tm" href="/media/comfyui/manifests/6545be29-1d73-4d91-b925-310915b7adca.json" target="_blank">manifest &#8599;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:28px" id="ledger">
     <div class="head"><h2 style="font-size:38px">The Ledger</h2>
       <span class="sub">every take is a sealed Genblaze manifest on B2 &mdash; retakes carry lineage</span></div>
     <div id="ledgerRoot" class="mono" style="font-size:12.5px"><div class="empty">Reading manifests from B2&hellip;</div></div>

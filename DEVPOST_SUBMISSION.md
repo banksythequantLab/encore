@@ -12,7 +12,7 @@ cast comes back** — continuity as infrastructure, not a prompt trick.
 
 **Code:** https://github.com/banksythequantLab/encore
 
-**Demo video:** https://youtu.be/LXRHYu_BHig
+**Demo video:** [PASTE YOUTUBE LINK HERE — upload encore_demo_v19.mp4]
 
 ---
 
